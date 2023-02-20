@@ -1,5 +1,11 @@
-import React from "react";
+import { db } from "../../firebase";
+import { uid } from "uid";
 
 export function AddPicture() {
-  return <div>AddPicture</div>;
+  return (
+    <div>
+      <input type="text" />
+      <button>Add comment</button>
+    </div>
+  );
 }
