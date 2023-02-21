@@ -7,6 +7,7 @@ export function Navbar() {
       <Link to="/leaderboards">Leaderboards</Link>
       <Link to="/addpicture">Add picture</Link>
       <Link to="/viewyours">View your pictures</Link>
+      <Link to="/signin">Sign In</Link>
     </div>
   );
 }

@@ -11,6 +11,7 @@ import {
   Outlet,
   RouterProvider,
 } from "react-router-dom";
+import { Authentication } from "./Components/Auth/Authentication";
 
 export default function App() {
   const router = createBrowserRouter(
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="leaderboards" element={<Leaderboards />} />
         <Route path="addpicture" element={<AddPicture />} />
         <Route path="viewyours" element={<ViewYours />} />
+        <Route path="signin" element={<Authentication />} />
       </Route>
     )
   );
