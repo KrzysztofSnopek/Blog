@@ -1,9 +1,17 @@
 import { auth, provider } from "../../firebase";
 import { signInWithPopup } from "firebase/auth";
+import Cookies from "universal-cookie";
 
 export const Auth = () => {
+  const cookies = new Cookies();
+
   const SignInWithGoogle = async () => {
-    await signInWithPopup(auth, provider);
+    try {
+      const result = await signInWithPopup(auth, provider);
+      cookies.set("auth-token", result.user.refreshToken);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
