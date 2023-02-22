@@ -17,15 +17,13 @@ import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
 
-export interface isAuthInterface {
+export interface CookiesData {
   name: string;
   options?: object;
 }
 
-export default function App() {
-  const [isAuth, setIsAuth] = useState<isAuthInterface>(
-    cookies.get("auth-token")
-  );
+export function App(): JSX.Element {
+  const [isAuth, setIsAuth] = useState<boolean>(!!cookies.get("auth-token"));
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -43,6 +41,7 @@ export default function App() {
     return (
       <div>
         <Auth setIsAuth={setIsAuth} />
+        {/* extract Auth as Context */}
       </div>
     );
   }

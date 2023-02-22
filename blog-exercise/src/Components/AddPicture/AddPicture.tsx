@@ -1,37 +1,41 @@
-import { uid } from "uid";
-import { useState, useEffect } from "react";
-import { ref, set } from "firebase/database";
+import { useState } from "react";
+import { addDoc, collection, serverTimestamp } from "@firebase/firestore";
+import { auth, db } from "../../firebase";
 
 export function AddPicture() {
   const [comment, setComment] = useState<string>("");
 
-  const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const commentsRef = collection(db, "Photos");
+
+  const handleCommentChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     setComment(e.target.value);
   };
 
-  // const addTextToDatabase = () => {
-  //   const uuid = uid();
-  //   set(ref(db, `/${uuid}`), {
-  //     comment,
-  //     uuid,
-  //   });
-  //   setComment("");
-  // };
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (comment === "") return;
+
+    await addDoc(commentsRef, {
+      text: comment,
+      timestamp: serverTimestamp(),
+      user: auth.currentUser?.displayName,
+    });
+
+    setComment("");
+  };
 
   return (
     <div>
-      <form action="">
+      <form onSubmit={handleFormSubmit}>
         <input
           type="text"
           placeholder="Add a comment"
           value={comment}
           onChange={handleCommentChange}
         />
-        <button
-        // onClick={addTextToDatabase}
-        >
-          Add comment
-        </button>
+        <button type="submit">Add comment</button>
       </form>
     </div>
   );
