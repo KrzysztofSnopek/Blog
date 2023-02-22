@@ -3,17 +3,30 @@ import { Main } from "./Components/Main/Main";
 import { Leaderboards } from "./Components/Leaderboards/Leaderboards";
 import { AddPicture } from "./Components/AddPicture/AddPicture";
 import { ViewYours } from "./Components/ViewYours/ViewYours";
+import { Authentication } from "./Components/Auth/Authentication";
+import { Auth } from "./Components/Auth/Auth";
 import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
-  Link,
   Outlet,
   RouterProvider,
 } from "react-router-dom";
-import { Authentication } from "./Components/Auth/Authentication";
+import { useState } from "react";
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
+
+export interface isAuthInterface {
+  name: string;
+  options?: object;
+}
 
 export default function App() {
+  const [isAuth, setIsAuth] = useState<isAuthInterface>(
+    cookies.get("auth-token")
+  );
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<Root />}>
@@ -25,6 +38,14 @@ export default function App() {
       </Route>
     )
   );
+
+  if (!isAuth) {
+    return (
+      <div>
+        <Auth setIsAuth={setIsAuth} />
+      </div>
+    );
+  }
 
   return (
     <div className="App">
