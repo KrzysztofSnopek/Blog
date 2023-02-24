@@ -12,18 +12,26 @@ import {
   Outlet,
   RouterProvider,
 } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Cookies from "universal-cookie";
+import {
+  AuthStoreContext,
+  AuthStoreProvider,
+} from "./Components/Auth/AuthStore";
 
-const cookies = new Cookies();
-
-export interface CookiesData {
-  name: string;
-  options?: object;
-}
+// export interface CookiesData {
+//   name: string;
+//   options?: object;
+// }
 
 export function App(): JSX.Element {
-  const [isAuth, setIsAuth] = useState<boolean>(!!cookies.get("auth-token"));
+  const AuthStore = useContext(AuthStoreContext);
+  console.log("Authstore: ", AuthStore.cookie);
+
+  // const [isAuth, setIsAuth] = useState<boolean>(!!cookies.get("auth-token"));
+  const cookies = AuthStore.cookie;
+
+  console.log(AuthStore.isAuth);
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -37,17 +45,17 @@ export function App(): JSX.Element {
     )
   );
 
-  if (!isAuth) {
+  if (!AuthStore.isAuth) {
     return (
       <div>
-        <Auth setIsAuth={setIsAuth} />
+        <Auth />
         {/* extract Auth as Context */}
       </div>
     );
   }
 
   return (
-    <div className="App">
+    <div>
       <RouterProvider router={router} />
     </div>
   );
