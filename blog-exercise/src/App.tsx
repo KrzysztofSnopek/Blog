@@ -12,26 +12,13 @@ import {
   Outlet,
   RouterProvider,
 } from "react-router-dom";
-import { useContext, useState } from "react";
-import Cookies from "universal-cookie";
-import {
-  AuthStoreContext,
-  AuthStoreProvider,
-} from "./Components/Auth/AuthStore";
+import { useContext } from "react";
+import { AuthStoreContext } from "./Components/Auth/AuthStore";
+import { observer } from "mobx-react";
 
-// export interface CookiesData {
-//   name: string;
-//   options?: object;
-// }
-
-export function App(): JSX.Element {
+function App(): JSX.Element {
   const AuthStore = useContext(AuthStoreContext);
-  console.log("Authstore: ", AuthStore.cookie);
-
-  // const [isAuth, setIsAuth] = useState<boolean>(!!cookies.get("auth-token"));
   const cookies = AuthStore.cookie;
-
-  console.log(AuthStore.isAuth);
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -49,7 +36,6 @@ export function App(): JSX.Element {
     return (
       <div>
         <Auth />
-        {/* extract Auth as Context */}
       </div>
     );
   }
@@ -60,6 +46,8 @@ export function App(): JSX.Element {
     </div>
   );
 }
+
+export default observer(App);
 
 export function Root() {
   return (
