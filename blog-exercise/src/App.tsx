@@ -26,7 +26,7 @@ function App(): JSX.Element {
         <Route path="leaderboards" element={<Leaderboards />} />
         <Route path="addpicture" element={<AddPicture />} />
         <Route path="viewyours" element={<ViewYours />} />
-        <Route path="signin" element={<Authentication />} />
+        <Route path="signout" element={<Authentication />} />
       </Route>
     )
   );

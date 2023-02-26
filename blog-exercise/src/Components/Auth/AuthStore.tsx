@@ -1,4 +1,4 @@
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, signOut } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
 import React, { useContext, useRef } from "react";
 import Cookies from "universal-cookie";
@@ -25,6 +25,12 @@ export default class AuthStore {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  signUserOut = async () => {
+    await signOut(auth);
+    this.cookie.remove("auth-token");
+    this.setIsAuth(false);
   };
 }
 
