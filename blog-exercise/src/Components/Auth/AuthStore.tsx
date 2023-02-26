@@ -1,6 +1,8 @@
+import { signInWithPopup } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
-import React, { useContext, Dispatch, SetStateAction, useRef } from "react";
+import React, { useContext, useRef } from "react";
 import Cookies from "universal-cookie";
+import { auth, provider } from "../../firebase";
 
 export default class AuthStore {
   constructor() {
@@ -8,16 +10,25 @@ export default class AuthStore {
   }
   cookie: Cookies = new Cookies();
   isAuth: boolean = !!this.cookie.get("auth-token");
+
   setIsAuth = (isAuth: boolean) => {
     this.isAuth = isAuth;
   };
-  //   setIsAuth: Dispatch<SetStateAction<boolean>>
+
+  signInWithGoogleAccount = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      this.cookie.set("auth-token", result.user.refreshToken, {
+        sameSite: "lax",
+      });
+      this.setIsAuth(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 }
 
-export const AuthStoreContext = React.createContext<Partial<AuthStore>>(
-  //   null as unknown as AuthStore
-  {}
-);
+export const AuthStoreContext = React.createContext<Partial<AuthStore>>({});
 
 export const useAuthStore = () => useContext(AuthStoreContext);
 

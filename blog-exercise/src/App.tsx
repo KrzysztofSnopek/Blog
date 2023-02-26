@@ -18,7 +18,6 @@ import { observer } from "mobx-react";
 
 function App(): JSX.Element {
   const AuthStore = useContext(AuthStoreContext);
-  const cookies = AuthStore.cookie;
 
   const router = createBrowserRouter(
     createRoutesFromElements(
