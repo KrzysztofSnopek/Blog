@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
-import AuthStore, { AuthStoreContext } from "../Auth/AuthStore";
+import { AuthStoreContext } from "../Auth/AuthStore";
 
 export function Navbar() {
   const AuthStore = useContext(AuthStoreContext);

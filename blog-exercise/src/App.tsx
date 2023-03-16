@@ -16,7 +16,7 @@ import { useContext } from "react";
 import { AuthStoreContext } from "./Components/Auth/AuthStore";
 import { observer } from "mobx-react";
 
-function App(): JSX.Element {
+export const App = observer((): JSX.Element => {
   const AuthStore = useContext(AuthStoreContext);
 
   const router = createBrowserRouter(
@@ -44,9 +44,7 @@ function App(): JSX.Element {
       <RouterProvider router={router} />
     </div>
   );
-}
-
-export default observer(App);
+});
 
 export function Root() {
   return (

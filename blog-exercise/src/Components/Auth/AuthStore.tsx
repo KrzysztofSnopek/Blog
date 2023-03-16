@@ -1,6 +1,6 @@
 import { signInWithPopup, signOut } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
-import React, { useContext, useRef } from "react";
+import React, { useRef } from "react";
 import Cookies from "universal-cookie";
 import { auth, provider } from "../../firebase";
 
@@ -35,8 +35,6 @@ export default class AuthStore {
 }
 
 export const AuthStoreContext = React.createContext<Partial<AuthStore>>({});
-
-export const useAuthStore = () => useContext(AuthStoreContext);
 
 type AuthProviderProps = {
   children: React.ReactNode;
