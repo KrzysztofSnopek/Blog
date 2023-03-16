@@ -5,7 +5,7 @@ import {
   serverTimestamp,
   onSnapshot,
   query,
-  where,
+  where /* around 47th min, allows to add statements to the snapshots */,
 } from "@firebase/firestore";
 import { auth, db } from "../../firebase";
 import { observer } from "mobx-react";
@@ -50,7 +50,13 @@ export const AddPicture = observer(() => {
 
   return (
     <div>
-      <form onSubmit={handleFormSubmit}>
+      <h1 className="font-bold p-2">Comments section</h1>
+      <div className="p-2">
+        {messages.map((message) => (
+          <div key={message.id}>{message.text}</div>
+        ))}
+      </div>
+      <form onSubmit={handleFormSubmit} className="p-2 bg-orange-300">
         <input
           type="text"
           placeholder="Add a comment"
@@ -59,11 +65,6 @@ export const AddPicture = observer(() => {
         />
         <button type="submit">Add comment</button>
       </form>
-      <div>
-        {messages.map((message, key) => (
-          <div key={key}>{message.text}</div>
-        ))}
-      </div>
     </div>
   );
 });
