@@ -10,20 +10,30 @@ import {
 import { auth, db } from "../../firebase";
 import { observer } from "mobx-react";
 
+interface Messages {
+  id: string;
+  text: string;
+  user: string;
+  timestamp: {
+    seconds: number;
+    nanoseconds: number;
+  };
+}
+
 export const AddPicture = observer(() => {
   const [comment, setComment] = useState<string>("");
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Messages[]>([]);
 
   const commentsRef = collection(db, "Photos");
 
   useEffect(() => {
     const queryMessages = query(commentsRef);
     const unsuscribe = onSnapshot(queryMessages, (snapshot) => {
-      let messages: any[] = [];
+      let messagesArr: Messages[] = [];
       snapshot.forEach((doc) => {
-        messages.push({ ...doc.data(), id: doc.id });
+        messagesArr.push({ ...doc.data(), id: doc.id } as Messages);
       });
-      setMessages(messages);
+      setMessages(messagesArr);
     });
 
     return () => unsuscribe();
