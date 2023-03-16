@@ -18,13 +18,15 @@ export const AddPicture = observer(() => {
 
   useEffect(() => {
     const queryMessages = query(commentsRef);
-    onSnapshot(queryMessages, (snapshot) => {
+    const unsuscribe = onSnapshot(queryMessages, (snapshot) => {
       let messages: any[] = [];
       snapshot.forEach((doc) => {
         messages.push({ ...doc.data(), id: doc.id });
       });
       setMessages(messages);
     });
+
+    return () => unsuscribe();
   }, []);
 
   const handleCommentChange = (
