@@ -53,7 +53,10 @@ export const AddPicture = observer(() => {
       <h1 className="font-bold p-2">Comments section</h1>
       <div className="p-2">
         {messages.map((message) => (
-          <div key={message.id}>{message.text}</div>
+          <div key={message.id}>
+            <span className="font-bold pr-2">{message.user}</span>
+            {message.text}
+          </div>
         ))}
       </div>
       <form onSubmit={handleFormSubmit} className="p-2 bg-orange-300">
