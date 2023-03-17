@@ -5,6 +5,7 @@ import {
   serverTimestamp,
   onSnapshot,
   query,
+  orderBy,
   where /* around 47th min, allows to add statements to the snapshots */,
 } from "@firebase/firestore";
 import { auth, db } from "../../firebase";
@@ -27,7 +28,7 @@ export const AddPicture = observer(() => {
   const commentsRef = collection(db, "Photos");
 
   useEffect(() => {
-    const queryMessages = query(commentsRef);
+    const queryMessages = query(commentsRef, orderBy("timestamp"));
     const unsuscribe = onSnapshot(queryMessages, (snapshot) => {
       let messagesArr: Messages[] = [];
       snapshot.forEach((doc) => {
