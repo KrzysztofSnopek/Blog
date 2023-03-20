@@ -1,46 +1,47 @@
 import { useEffect, useState } from "react";
 import { storage } from "../../firebase";
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes, uploadString } from "firebase/storage";
 import { auth, db } from "../../firebase";
 import { observer } from "mobx-react";
 import { v4 } from "uuid";
 
 export const AddPicture = observer(() => {
-  const [myImage, setMyImage] = useState(null);
+  // const [myImage, setMyImage] = useState(null);
   const [filebase64, setFileBase64] = useState<string>("");
   const userName = auth.currentUser?.displayName;
 
-  const handleImageUpload = async (e: React.FormEvent<HTMLFormElement>) => {
-    if (myImage === null) return;
+  const handleImageUpload = (e: any): void => {
+    e.preventDefault();
+    console.log("dupa");
 
-    const imageRef = ref(storage, `images/${userName}/${myImage + v4()}`);
-    uploadBytes(imageRef, myImage).then(() => {
+    if (filebase64 === "") return;
+
+    const imageRef = ref(storage, `${userName}/${filebase64 + v4()}`);
+
+    console.log({ filebase64 });
+    console.log({ imageRef });
+
+    uploadString(imageRef, filebase64, "base64").then(() => {
       alert("uploaded to the storage");
     });
   };
-  // const handleFilePicking = (
-  //   e: React.ChangeEvent<HTMLInputElement>
-  // ): void => {
-  //   const files = (e.target as HTMLInputElement).files
 
-  //   if(files !== null){
-  //     setMyImage(files);
-  //   }
-  // };
-
-  function convertFile(files: FileList | null) {
+  function convertFile(files: FileList | null): void {
     if (files) {
       const fileRef = files[0] || "";
       const fileType: string = fileRef.type || "";
       console.log("This file upload is of type:", fileType);
       const reader = new FileReader();
       reader.readAsBinaryString(fileRef);
-      reader.onload = (ev: any) => {
+      reader.onload = (e: any) => {
         // convert it to base64
-        setFileBase64(`data:${fileType};base64,${btoa(ev.target.result)}`);
+        setFileBase64(`${btoa(e.target.result)}`);
+        console.log(filebase64);
       };
     }
   }
+
+  console.log(filebase64);
 
   return (
     <div>
