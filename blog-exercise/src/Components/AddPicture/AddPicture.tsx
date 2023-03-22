@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
 import { storage } from "../../firebase";
-import { ref, uploadBytes, uploadString } from "firebase/storage";
+import { ref, listAll, uploadString, getDownloadURL } from "firebase/storage";
 import { auth, db } from "../../firebase";
 import { observer } from "mobx-react";
 import { v4 } from "uuid";
+import { url } from "inspector";
 
 export const AddPicture = observer(() => {
   // const [myImage, setMyImage] = useState(null);
   const [filebase64, setFileBase64] = useState<string>("");
+  const [pictureList, setPictureList] = useState([]);
   const userName = auth.currentUser?.displayName;
+  const pictureListRef = ref(storage, `projectFiles/${userName}`);
+  console.log({ pictureListRef });
 
-  const handleImageUpload = (e: any): void => {
+  const handleImageUpload = async (e: any) => {
     e.preventDefault();
-    console.log("dupa");
 
     if (filebase64 === "") return;
 
-    const imageRef = ref(storage, `${userName}/${filebase64 + v4()}`);
+    const imageRef = ref(storage, `projectFiles/${userName}/${v4()}`);
 
-    console.log({ filebase64 });
-    console.log({ imageRef });
-
-    uploadString(imageRef, filebase64, "base64").then(() => {
+    await uploadString(imageRef, filebase64, "base64").then(() => {
       alert("uploaded to the storage");
     });
   };
@@ -36,12 +36,22 @@ export const AddPicture = observer(() => {
       reader.onload = (e: any) => {
         // convert it to base64
         setFileBase64(`${btoa(e.target.result)}`);
-        console.log(filebase64);
       };
     }
   }
 
-  console.log(filebase64);
+  useEffect(() => {
+    listAll(pictureListRef).then((response) => {
+      response.items.forEach((item) => {
+        getDownloadURL(item).then((url) => {
+          setPictureList((prev): any => [...prev, url]);
+          console.log(pictureList);
+        });
+      });
+    });
+  }, []);
+
+  console.log(pictureList);
 
   return (
     <div>
@@ -51,6 +61,10 @@ export const AddPicture = observer(() => {
         <input type="file" onChange={(e) => convertFile(e.target.files)} />
         <button type="submit">Share your picture!</button>
       </form>
+
+      {pictureList.map((url) => {
+        return <img src={url} key={url} />;
+      })}
     </div>
   );
 });
