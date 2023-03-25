@@ -1,18 +1,15 @@
 import { useEffect, useState } from "react";
 import { storage } from "../../firebase";
 import { ref, listAll, uploadString, getDownloadURL } from "firebase/storage";
-import { auth, db } from "../../firebase";
+import { auth } from "../../firebase";
 import { observer } from "mobx-react";
 import { v4 } from "uuid";
-import { url } from "inspector";
 
 export const AddPicture = observer(() => {
-  // const [myImage, setMyImage] = useState(null);
   const [filebase64, setFileBase64] = useState<string>("");
-  const [pictureList, setPictureList] = useState([]);
+  // const [pictureList, setPictureList] = useState([]);
   const userName = auth.currentUser?.displayName;
-  const pictureListRef = ref(storage, `projectFiles/${userName}`);
-  console.log({ pictureListRef });
+  // const pictureListRef = ref(storage, `projectFiles/${userName}`);
 
   const handleImageUpload = async (e: any) => {
     e.preventDefault();
@@ -40,18 +37,17 @@ export const AddPicture = observer(() => {
     }
   }
 
-  useEffect(() => {
-    listAll(pictureListRef).then((response) => {
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          setPictureList((prev): any => [...prev, url]);
-          console.log(pictureList);
-        });
-      });
-    });
-  }, []);
-
-  console.log(pictureList);
+  // useEffect(() => {
+  //   const controller = new AbortController();
+  //   listAll(pictureListRef).then((response) => {
+  //     response.items.forEach((item) => {
+  //       getDownloadURL(item).then((url) => {
+  //         setPictureList((prev): any => [...prev, url]);
+  //       });
+  //     });
+  //   });
+  //   return () => controller?.abort();
+  // }, []);
 
   return (
     <div>
@@ -62,9 +58,9 @@ export const AddPicture = observer(() => {
         <button type="submit">Share your picture!</button>
       </form>
 
-      {pictureList.map((url) => {
+      {/* {pictureList.map((url) => {
         return <img src={url} key={url} />;
-      })}
+      })} */}
     </div>
   );
 });
