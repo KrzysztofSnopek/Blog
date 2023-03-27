@@ -1,11 +1,35 @@
-import { useEffect } from "react";
-// import { onSnapshot, query, where } from "firebase/firestore";
+import { useState, useEffect } from "react";
+import { storage, auth } from "../../firebase";
+import { ref, listAll, getDownloadURL } from "firebase/storage";
 
 export function Main() {
-  //   useEffect(() => {
-  //     const queryMessages = query(commentsRef, where())
-  //     onSnapshot(queryMessages, (snapshot) => )
-  //   }, [])
+  const [pictureList, setPictureList] = useState([]);
 
-  return <div>Main</div>;
+  const userName = auth.currentUser?.displayName;
+  const pictureListRef = ref(storage, "projectFiles");
+
+  useEffect(() => {
+    let subscribed = true;
+    listAll(pictureListRef).then((response) => {
+      response.prefixes.forEach((item) => {
+        getDownloadURL(item).then((url) => {
+          if (subscribed) {
+            setPictureList((prev): any => [...prev, url]);
+          }
+        });
+      });
+    });
+    return () => {
+      subscribed = false;
+    };
+  }, []);
+  console.log(pictureList);
+
+  return (
+    <div>
+      {pictureList.map((url) => {
+        return <img src={url} key={url} />;
+      })}
+    </div>
+  );
 }

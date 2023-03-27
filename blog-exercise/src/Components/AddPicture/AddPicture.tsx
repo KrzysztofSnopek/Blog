@@ -7,18 +7,22 @@ import { v4 } from "uuid";
 
 export const AddPicture = observer(() => {
   const [filebase64, setFileBase64] = useState<string>("");
-  // const [pictureList, setPictureList] = useState([]);
   const userName = auth.currentUser?.displayName;
-  // const pictureListRef = ref(storage, `projectFiles/${userName}`);
 
   const handleImageUpload = async (e: any) => {
     e.preventDefault();
 
     if (filebase64 === "") return;
 
-    const imageRef = ref(storage, `projectFiles/${userName}/${v4()}`);
+    const imageRef = ref(storage, `projectFiles/${v4()}`);
 
-    await uploadString(imageRef, filebase64, "base64").then(() => {
+    const metadata = {
+      customMetadata: {
+        createdBy: `${userName}`,
+      },
+    };
+
+    await uploadString(imageRef, filebase64, "base64", metadata).then(() => {
       alert("uploaded to the storage");
     });
   };
@@ -37,18 +41,6 @@ export const AddPicture = observer(() => {
     }
   }
 
-  // useEffect(() => {
-  //   const controller = new AbortController();
-  //   listAll(pictureListRef).then((response) => {
-  //     response.items.forEach((item) => {
-  //       getDownloadURL(item).then((url) => {
-  //         setPictureList((prev): any => [...prev, url]);
-  //       });
-  //     });
-  //   });
-  //   return () => controller?.abort();
-  // }, []);
-
   return (
     <div>
       <h1 className="font-bold p-2">Share your pictures with others here!</h1>
@@ -57,10 +49,6 @@ export const AddPicture = observer(() => {
         <input type="file" onChange={(e) => convertFile(e.target.files)} />
         <button type="submit">Share your picture!</button>
       </form>
-
-      {/* {pictureList.map((url) => {
-        return <img src={url} key={url} />;
-      })} */}
     </div>
   );
 });
