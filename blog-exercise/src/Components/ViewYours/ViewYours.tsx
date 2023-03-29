@@ -14,25 +14,24 @@ export function ViewYours() {
   const [oMetadata, setOMetadata] = useState<FullMetadata>();
 
   const userName = auth.currentUser?.displayName;
-  const pictureListRef = ref(storage, "projectFiles/");
+  const pictureListRef = ref(storage, "projectFiles");
 
-  // const obtainedMetadata = getMetadata(pictureListRef).then((metadata) =>
-  //   setOMetadata(metadata)
-  // );
-  // console.log(obtainedMetadata);
+  console.log("username:", userName);
 
   useEffect(() => {
     let subscribed = true;
     listAll(pictureListRef).then((response) => {
       response.items.forEach((item) => {
         getMetadata(item).then((data) => setOMetadata(data));
-      });
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          if (subscribed) {
-            setPictureList((prev): any => [...prev, url]);
-          }
-        });
+        if (oMetadata?.customMetadata?.createdBy === userName) {
+          getDownloadURL(item).then((url) => {
+            if (subscribed) {
+              console.log("1", oMetadata?.customMetadata?.createdBy);
+              console.log("2", userName);
+              setPictureList((prev): any => [...prev, url]);
+            }
+          });
+        }
       });
     });
     return () => {
@@ -40,10 +39,12 @@ export function ViewYours() {
     };
   }, []);
 
-  console.log(oMetadata?.customMetadata.createdBy);
+  console.log("metadata info:", oMetadata?.customMetadata?.createdBy);
+  console.log("picturelist", pictureList);
 
   return (
     <div>
+      {userName}
       {pictureList.map((url) => {
         return <img src={url} key={url} />;
       })}
