@@ -1,20 +1,23 @@
 import { useState, useEffect } from "react";
-import { storage, auth } from "../../firebase";
+import { storage } from "../../firebase";
 import { ref, listAll, getDownloadURL } from "firebase/storage";
+import { auth } from "../../firebase";
 
 export function Main() {
   const [pictureList, setPictureList] = useState([]);
 
   const userName = auth.currentUser?.displayName;
-  const pictureListRef = ref(storage, "projectFiles");
+  const pictureListRef = ref(storage, `projectFiles`);
 
   useEffect(() => {
     let subscribed = true;
     listAll(pictureListRef).then((response) => {
-      response.prefixes.forEach((item) => {
+      response.items.forEach((item) => {
         getDownloadURL(item).then((url) => {
           if (subscribed) {
-            setPictureList((prev): any => [...prev, url]);
+            setPictureList((prev): any => {
+              return [...prev, url];
+            });
           }
         });
       });
@@ -23,10 +26,10 @@ export function Main() {
       subscribed = false;
     };
   }, []);
-  console.log(pictureList);
 
   return (
     <div>
+      {userName}
       {pictureList.map((url) => {
         return <img src={url} key={url} />;
       })}
