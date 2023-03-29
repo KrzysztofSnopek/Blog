@@ -16,31 +16,35 @@ export function ViewYours() {
   const userName = auth.currentUser?.displayName;
   const pictureListRef = ref(storage, "projectFiles");
 
-  console.log("username:", userName);
+  // console.log("username:", userName);
+  const mypath = "projectFiles/dracola890-d2aa9156";
+  const regex = /\/([^\/-]+)-/;
+  const regexResult = mypath.match(regex);
+  console.log("mypath regex to:", regexResult?.at(1));
 
   useEffect(() => {
     let subscribed = true;
     listAll(pictureListRef).then((response) => {
       response.items.forEach((item) => {
-        getMetadata(item).then((data) => setOMetadata(data));
-        if (oMetadata?.customMetadata?.createdBy === userName) {
-          getDownloadURL(item).then((url) => {
-            if (subscribed) {
-              console.log("1", oMetadata?.customMetadata?.createdBy);
-              console.log("2", userName);
-              setPictureList((prev): any => [...prev, url]);
+        getMetadata(item)
+          .then((data) => setOMetadata(data))
+          .then(() => {
+            if (oMetadata?.customMetadata?.createdBy === userName) {
+              getDownloadURL(item).then((url) => {
+                if (subscribed) {
+                  setPictureList((prev): any => {
+                    return [...prev, url];
+                  });
+                }
+              });
             }
           });
-        }
       });
     });
     return () => {
       subscribed = false;
     };
-  }, []);
-
-  console.log("metadata info:", oMetadata?.customMetadata?.createdBy);
-  console.log("picturelist", pictureList);
+  }, [userName]);
 
   return (
     <div>

@@ -14,7 +14,7 @@ export const AddPicture = observer(() => {
 
     if (filebase64 === "") return;
 
-    const imageRef = ref(storage, `projectFiles/${userName + "-" + v4()}`);
+    const imageRef = ref(storage, `projectFiles/${userName + "/" + v4()}`);
 
     const metadata = {
       customMetadata: {
