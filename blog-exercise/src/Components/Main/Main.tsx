@@ -30,9 +30,19 @@ export function Main() {
   return (
     <div>
       {userName}
-      {pictureList.map((url) => {
-        return <img src={url} key={url} />;
-      })}
+      <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-4">
+        {pictureList.map((url) => {
+          return (
+            <div className="w-1/4 p-8 flex justify-center">
+              <img
+                className="object-cover max-w-full h-auto"
+                src={url}
+                key={url}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
