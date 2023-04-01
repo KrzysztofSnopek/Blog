@@ -30,10 +30,10 @@ export function Main() {
   return (
     <div>
       {userName}
-      <div className="flex flex-wrap flex-row-3 bg-slate-300 justify-center gap-4">
+      <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-4">
         {pictureList.map((url) => {
           return (
-            <div className="w-1/4 max-h-80 p-8 flex justify-center bg-slate-400">
+            <div className="w-1/4 p-8 flex justify-center">
               <img
                 className="object-cover max-w-full h-auto"
                 src={url}
