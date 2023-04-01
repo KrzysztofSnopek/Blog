@@ -5,9 +5,13 @@ export const Auth = () => {
   const AuthStore = useContext(AuthStoreContext);
 
   return (
-    <div>
-      <p>Sign in with Google to continue.</p>
-      <button onClick={AuthStore.signInWithGoogleAccount}>Sign in</button>
+    <div className="bg-pattern-main">
+      <div className="flex justify-center h-screen">
+        <p>Sign in with Google to continue.</p>
+        <button className="" onClick={AuthStore.signInWithGoogleAccount}>
+          Sign in
+        </button>
+      </div>
     </div>
   );
 };
