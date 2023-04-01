@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { storage } from "../../firebase";
-import { ref, listAll, uploadString, getDownloadURL } from "firebase/storage";
+import { ref, uploadString } from "firebase/storage";
 import { auth } from "../../firebase";
 import { observer } from "mobx-react";
 import { v4 } from "uuid";

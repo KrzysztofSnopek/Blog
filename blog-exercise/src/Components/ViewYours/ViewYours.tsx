@@ -36,7 +36,7 @@ export function ViewYours() {
     <div>
       {userName}
       {pictureList.map((url) => {
-        return <img src={url} key={url} />;
+        return <img src={url} key={url} alt="" />;
       })}
     </div>
   );

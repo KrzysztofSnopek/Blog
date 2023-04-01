@@ -38,6 +38,7 @@ export function Main() {
                 className="object-cover max-w-full h-auto"
                 src={url}
                 key={url}
+                alt=""
               />
             </div>
           );
