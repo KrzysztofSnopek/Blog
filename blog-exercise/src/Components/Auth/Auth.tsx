@@ -6,14 +6,18 @@ export const Auth = () => {
 
   return (
     <div className="bg-pattern-main h-screen">
-      <div className="flex justify-center ">
-        <p>Sign in with Google to continue.</p>
-        <button
-          className="text-orange-100"
-          onClick={AuthStore.signInWithGoogleAccount}
-        >
-          Sign in
-        </button>
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="w-1/4 h-1/2 bg-slate-50 flex flex-col">
+          <p className="text-orange-200 p-6 pt-16 text-center">
+            Sign in with Google to continue.
+          </p>
+          <button
+            className="text-orange-100 p-6 pb-16 text-center"
+            onClick={AuthStore.signInWithGoogleAccount}
+          >
+            Sign in
+          </button>
+        </div>
       </div>
     </div>
   );
