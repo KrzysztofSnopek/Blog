@@ -24,7 +24,6 @@ export function ViewYours() {
   const regex = /\/([^\/-]+)_/;
 
   useEffect(() => {
-    let subscribed = true;
     listAll(pictureListRef).then((response) => {
       response.items.forEach((item) => {
         if (item.fullPath.match(regex)?.at(1) === userName) {
@@ -33,32 +32,33 @@ export function ViewYours() {
           });
           const alt = imageAlt?.customMetadata?.imageName;
           getDownloadURL(item).then((url) => {
-            if (subscribed) {
-              setPictureList((prev): any => {
-                return [...prev, { url, alt }];
-              });
-            }
+            setPictureList((prev): any => {
+              return [...prev, { url, alt }];
+            });
           });
         }
       });
     });
-    return () => {
-      subscribed = false;
-    };
   }, []);
 
   return (
-    <div>
+    <div className="bg-slate-400">
       {userName}
-
-      {pictureList.map((item) => {
-        return (
-          <div>
-            <div>{item.alt}</div>
-            <img src={item.url} key={item.url} alt={item.alt} />
-          </div>
-        );
-      })}
+      <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
+        {pictureList.map((item) => {
+          return (
+            <div className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl">
+              <div className="px-6 pt-6 text-center">{item.alt}</div>
+              <img
+                className="object-contain max-h-full max-w-full p-6"
+                src={item.url}
+                key={item.url}
+                alt={item.alt}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
