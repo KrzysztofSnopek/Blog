@@ -49,7 +49,11 @@ export const AddPicture = observer(() => {
 
       <form onSubmit={handleImageUpload} className="p-2 bg-orange-300">
         <input type="file" onChange={(e) => convertFile(e.target.files)} />
-        <input type="text" onChange={(e) => setPictureName(e.target.value)} />
+        <input
+          type="text"
+          placeholder="Add picture name"
+          onChange={(e) => setPictureName(e.target.value)}
+        />
         <button type="submit">Share your picture!</button>
       </form>
     </div>
