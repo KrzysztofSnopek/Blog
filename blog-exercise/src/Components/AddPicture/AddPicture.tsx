@@ -7,6 +7,7 @@ import { v4 } from "uuid";
 
 export const AddPicture = observer(() => {
   const [filebase64, setFileBase64] = useState<string>("");
+  const [pictureName, setPictureName] = useState<string>("");
   const userName = auth.currentUser?.displayName;
 
   const handleImageUpload = async (e: any) => {
@@ -14,7 +15,10 @@ export const AddPicture = observer(() => {
 
     if (filebase64 === "") return;
 
-    const imageRef = ref(storage, `projectFiles/${userName + "_" + v4()}`);
+    const imageRef = ref(
+      storage,
+      `projectFiles/${userName + "_" + v4() + ":" + pictureName}`
+    );
 
     const metadata = {
       customMetadata: {
@@ -47,6 +51,7 @@ export const AddPicture = observer(() => {
 
       <form onSubmit={handleImageUpload} className="p-2 bg-orange-300">
         <input type="file" onChange={(e) => convertFile(e.target.files)} />
+        <input type="text" onChange={(e) => setPictureName(e.target.value)} />
         <button type="submit">Share your picture!</button>
       </form>
     </div>
