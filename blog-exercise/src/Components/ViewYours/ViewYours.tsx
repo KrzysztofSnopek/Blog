@@ -1,16 +1,29 @@
 import { useState, useEffect } from "react";
 import { storage } from "../../firebase";
-import { ref, listAll, getDownloadURL } from "firebase/storage";
+import {
+  ref,
+  listAll,
+  getDownloadURL,
+  getMetadata,
+  FullMetadata,
+} from "firebase/storage";
 import { auth } from "../../firebase";
 
+export interface UploadedImage {
+  url: string;
+  imageALT: string;
+}
+
 export function ViewYours() {
-  const [pictureList, setPictureList] = useState([]);
+  const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
+  const [imageAlt, setImageAlt] = useState<FullMetadata>();
 
   const userName = auth.currentUser?.displayName;
   const pictureListRef = ref(storage, `projectFiles`);
 
   // const regex = /\/([^\/-]+)\//;
   const regex = /\/([^\/-]+)_/;
+  const altRegex = /%([^\/-]+)%/;
 
   useEffect(() => {
     let subscribed = true;
@@ -20,7 +33,11 @@ export function ViewYours() {
           getDownloadURL(item).then((url) => {
             if (subscribed) {
               setPictureList((prev): any => {
-                return [...prev, url];
+                getMetadata(item).then((metadata) => {
+                  setImageAlt(metadata);
+                });
+                console.log("imageALT:", imageAlt);
+                return [...prev, { url, imageAlt }];
               });
             }
           });
@@ -32,11 +49,19 @@ export function ViewYours() {
     };
   }, []);
 
+  console.log(imageAlt);
+
   return (
     <div>
       {userName}
-      {pictureList.map((url) => {
-        return <img src={url} key={url} alt="" />;
+
+      {pictureList.map((item) => {
+        return (
+          <div>
+            <div>{item.imageALT}</div>
+            <img src={item.url} key={item.url} alt={item.imageALT} />
+          </div>
+        );
       })}
     </div>
   );
