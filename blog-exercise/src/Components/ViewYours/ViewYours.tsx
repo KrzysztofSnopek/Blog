@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { storage } from "../../firebase";
 import { ref, listAll, getDownloadURL, getMetadata } from "firebase/storage";
 import { auth } from "../../firebase";
+import { Loader } from "../../Helpers/Loader";
 
 export interface UploadedImage {
   url: string;
@@ -41,7 +42,7 @@ export function ViewYours() {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   return (
@@ -64,6 +65,7 @@ export function ViewYours() {
           );
         })}
       </div>
+      <Loader />
     </div>
   );
 }
