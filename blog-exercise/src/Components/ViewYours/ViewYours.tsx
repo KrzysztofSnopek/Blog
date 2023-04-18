@@ -65,7 +65,6 @@ export function ViewYours() {
           );
         })}
       </div>
-      <Loader />
     </div>
   );
 }

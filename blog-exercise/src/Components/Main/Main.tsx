@@ -1,44 +1,49 @@
 import { useState, useEffect } from "react";
 import { storage } from "../../firebase";
-import { ref, listAll, getDownloadURL } from "firebase/storage";
-import { auth } from "../../firebase";
+import { ref, listAll, getDownloadURL, getMetadata } from "firebase/storage";
+import { Loader } from "../../Helpers/Loader";
+import { UploadedImage } from "../ViewYours/ViewYours";
 
 export function Main() {
-  const [pictureList, setPictureList] = useState([]);
-
-  const userName = auth.currentUser?.displayName;
+  const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const pictureListRef = ref(storage, `projectFiles`);
 
   useEffect(() => {
-    let subscribed = true;
+    const imageData: UploadedImage[] = [];
+
     listAll(pictureListRef).then((response) => {
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          if (subscribed) {
-            setPictureList((prev): any => {
-              return [...prev, url];
-            });
-          }
+      const promises = response.items.map((item) =>
+        Promise.all([getDownloadURL(item), getMetadata(item)])
+      );
+
+      Promise.all(promises).then((results) => {
+        results.forEach(([url, metadata]) => {
+          const alt = metadata?.customMetadata?.imageName ?? "";
+          imageData.push({ url, alt });
         });
+
+        setPictureList(imageData);
+        setIsLoading(false);
       });
     });
-    return () => {
-      subscribed = false;
-    };
   }, []);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div>
-      <div className="bg-slate-400">{userName}</div>
       <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
-        {pictureList.map((url) => {
+        {pictureList.map((item, index) => {
           return (
             <div className="w-1/4 p-8 flex justify-center max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl">
               <img
                 className="object-contain max-w-full h-auto"
-                src={url}
-                key={url}
-                alt=""
+                src={item.url}
+                key={`${index}-${item.url}`}
+                alt={item.alt}
               />
             </div>
           );

@@ -6,7 +6,7 @@ export function Navbar() {
   const AuthStore = useContext(AuthStoreContext);
 
   return (
-    <div className="bg-orange-400 p-6 text-lg text-gray-500 font-bold flex justify-between h-20">
+    <div className="bg-orange-400 p-6 text-lg text-slate-700 font-bold flex justify-between h-20">
       <Link to="/">Main</Link>
       <Link to="/leaderboards">Leaderboards</Link>
       <Link to="/addpicture">Add picture</Link>
