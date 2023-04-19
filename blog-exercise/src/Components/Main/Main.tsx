@@ -38,11 +38,13 @@ export function Main() {
       <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
         {pictureList.map((item, index) => {
           return (
-            <div className="w-1/4 p-8 flex justify-center max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl">
+            <div
+              className="w-1/4 p-8 flex justify-center max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl"
+              key={`${index}-${item.url}`}
+            >
               <img
-                className="object-contain max-w-full h-auto"
+                className="object-contain max-w-full h-auto cursor-pointer hover:opacity-70"
                 src={item.url}
-                key={`${index}-${item.url}`}
                 alt={item.alt}
               />
             </div>
