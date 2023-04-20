@@ -46,16 +46,18 @@ export function Main() {
       <div
         className={
           isImgFullScreen
-            ? "w-full h-screen fixed top-0 left-0 flex justify-center items-center bg-slate-900 bg-opacity-20 backdrop-blur-xl shadow-xl z-10"
+            ? "w-full min-h-screen fixed top-0 left-0 flex justify-center items-center bg-slate-900 bg-opacity-20 backdrop-blur-xl shadow-xl z-10"
             : "hidden"
         }
       >
-        <img
-          src={tempImgURL}
-          className="cursor-pointer"
-          alt=""
-          onClick={() => setIsImgFullScreen(false)}
-        />
+        <div className="h-5/6">
+          <img
+            src={tempImgURL}
+            className="cursor-pointer max-h-screen"
+            alt=""
+            onClick={() => setIsImgFullScreen(false)}
+          />
+        </div>
         <div
           className="cursor-pointer text-slate-600 hover:text-orange-500 fixed top-4 right-4"
           onClick={() => setIsImgFullScreen(false)}
@@ -63,6 +65,7 @@ export function Main() {
           <DisabledByDefaultOutlinedIcon fontSize="large" color="inherit" />
         </div>
       </div>
+
       <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
         {pictureList.map((item, index) => {
           return (

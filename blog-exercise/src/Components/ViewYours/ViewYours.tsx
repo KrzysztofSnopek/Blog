@@ -3,6 +3,7 @@ import { storage } from "../../firebase";
 import { ref, listAll, getDownloadURL, getMetadata } from "firebase/storage";
 import { auth } from "../../firebase";
 import { Loader } from "../../Helpers/Loader";
+import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 
 export interface UploadedImage {
   url: string;
@@ -13,6 +14,8 @@ export function ViewYours() {
   const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
   const [userName, setUserName] = useState<string | "unknown">("unknown");
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
+  const [tempImgURL, setTempImgURL] = useState<string>("");
 
   const pictureListRef = ref(storage, `projectFiles`);
 
@@ -45,14 +48,40 @@ export function ViewYours() {
     return <Loader />;
   }
 
+  const getYourImg = (imgUrl: string) => {
+    setTempImgURL(imgUrl);
+    setIsImgFullScreen(true);
+  };
+
   return (
     <div className="bg-slate-400">
+      <div
+        className={
+          isImgFullScreen
+            ? "w-full min-h-screen fixed top-0 left-0 flex justify-center items-center bg-slate-900 bg-opacity-20 backdrop-blur-xl shadow-xl z-10"
+            : "hidden"
+        }
+      >
+        <img
+          src={tempImgURL}
+          className="cursor-pointer max-h-screen"
+          alt=""
+          onClick={() => setIsImgFullScreen(false)}
+        />
+        <div
+          className="cursor-pointer text-slate-600 hover:text-orange-500 fixed top-4 right-4"
+          onClick={() => setIsImgFullScreen(false)}
+        >
+          <DisabledByDefaultOutlinedIcon fontSize="large" color="inherit" />
+        </div>
+      </div>
       {userName}
       <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
         {pictureList.map((item, index) => {
           return (
             <div
-              className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl"
+              className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl hover:opacity-70 cursor-pointer"
+              onClick={() => getYourImg(item.url)}
               key={`${index}-${item.url}`}
             >
               <div className="px-6 pt-6 text-center">{item.alt}</div>
