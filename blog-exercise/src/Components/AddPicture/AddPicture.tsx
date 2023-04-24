@@ -14,13 +14,15 @@ export const AddPicture = observer(() => {
     e.preventDefault();
 
     if (filebase64 === "") return;
+    const storagePathElement = userName + "_" + v4();
 
-    const imageRef = ref(storage, `projectFiles/${userName + "_" + v4()}`);
+    const imageRef = ref(storage, `projectFiles/${storagePathElement}`);
 
     const metadata = {
       customMetadata: {
         createdBy: `${userName}`,
         imageName: `${pictureName}`,
+        storagePathElement: `${storagePathElement}`,
         likeCount: "0",
       },
     };

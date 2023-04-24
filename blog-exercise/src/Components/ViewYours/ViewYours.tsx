@@ -8,6 +8,7 @@ import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefault
 export interface UploadedImage {
   url: string;
   alt: string;
+  storagePathElement: string;
   likeCount: number;
 }
 
@@ -37,7 +38,8 @@ export function ViewYours() {
         results.forEach(([url, metadata]) => {
           const alt = metadata?.customMetadata?.imageName ?? "";
           const likeCount = metadata.customMetadata.likeCount;
-          imageData.push({ url, alt, likeCount });
+          const storagePathElement = metadata.customMetadata.storagePathElement;
+          imageData.push({ url, alt, storagePathElement, likeCount });
         });
 
         setPictureList(imageData);

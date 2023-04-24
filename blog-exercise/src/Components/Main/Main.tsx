@@ -1,9 +1,17 @@
 import { useState, useEffect } from "react";
 import { storage } from "../../firebase";
-import { ref, listAll, getDownloadURL, getMetadata } from "firebase/storage";
+import {
+  ref,
+  listAll,
+  getDownloadURL,
+  getMetadata,
+  updateMetadata,
+  list,
+} from "firebase/storage";
 import { Loader } from "../../Helpers/Loader";
 import { UploadedImage } from "../ViewYours/ViewYours";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
+import { BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
 
 export function Main() {
   const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
@@ -11,6 +19,7 @@ export function Main() {
   const pictureListRef = ref(storage, `projectFiles`);
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
+  const [likeNumber, setLikeNumber] = useState<number>(0);
 
   useEffect(() => {
     const imageData: UploadedImage[] = [];
@@ -24,14 +33,15 @@ export function Main() {
         results.forEach(([url, metadata]) => {
           const alt = metadata?.customMetadata?.imageName ?? "";
           const likeCount = metadata.customMetadata.likeCount;
-          imageData.push({ url, alt, likeCount });
+          const storagePathElement = metadata.customMetadata.storagePathElement;
+          imageData.push({ url, alt, storagePathElement, likeCount });
         });
 
         setPictureList(imageData);
         setIsLoading(false);
       });
     });
-  }, []);
+  }, [likeNumber]);
 
   if (isLoading) {
     return <Loader />;
@@ -40,6 +50,21 @@ export function Main() {
   const getImg = (imgUrl: string) => {
     setTempImgURL(imgUrl);
     setIsImgFullScreen(true);
+  };
+
+  const addLike = (item: UploadedImage) => {
+    const newLikeMetadata = {
+      customMetadata: {
+        likeCount: `${Number(item.likeCount) + 1}`,
+      },
+    };
+
+    const countRef = ref(storage, `projectFiles/${item.storagePathElement}`);
+
+    updateMetadata(countRef, newLikeMetadata).then((metadata) => {
+      console.log(metadata);
+      setLikeNumber(metadata.customMetadata.likeCount);
+    });
   };
 
   return (
@@ -71,17 +96,22 @@ export function Main() {
         {pictureList.map((item, index) => {
           return (
             <div
-              className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl hover:opacity-70 cursor-pointer"
-              onClick={() => getImg(item.url)}
+              className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl "
               key={`${index}-${item.url}`}
             >
               <div className="px-6 pt-6 text-center">{item.alt}</div>
               <img
-                className="object-contain max-h-full max-w-full p-6"
+                className="object-contain max-h-full max-w-full p-6 hover:opacity-70 cursor-pointer"
                 src={item.url}
                 alt={item.alt}
+                onClick={() => getImg(item.url)}
               />
-              <div className="pb-4 text-center">{item.likeCount}</div>
+              <div className="pb-8 text-xl text-slate-950 fixed -right-4 flex flex-col items-center">
+                <span className="p-2 cursor-pointer">
+                  <BsSuitHeartFill onClick={() => addLike(item)} />
+                </span>
+                <span className="">{item.likeCount}</span>
+              </div>
             </div>
           );
         })}
