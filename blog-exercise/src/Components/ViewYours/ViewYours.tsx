@@ -8,6 +8,7 @@ import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefault
 export interface UploadedImage {
   url: string;
   alt: string;
+  likeCount: number;
 }
 
 export function ViewYours() {
@@ -35,7 +36,8 @@ export function ViewYours() {
       Promise.all(promises).then((results) => {
         results.forEach(([url, metadata]) => {
           const alt = metadata?.customMetadata?.imageName ?? "";
-          imageData.push({ url, alt });
+          const likeCount = metadata.customMetadata.likeCount;
+          imageData.push({ url, alt, likeCount });
         });
 
         setPictureList(imageData);
@@ -75,7 +77,6 @@ export function ViewYours() {
           <DisabledByDefaultOutlinedIcon fontSize="large" color="inherit" />
         </div>
       </div>
-      {userName}
       <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
         {pictureList.map((item, index) => {
           return (
@@ -90,6 +91,7 @@ export function ViewYours() {
                 src={item.url}
                 alt={item.alt}
               />
+              <div className="pb-4 text-center">{item.likeCount}</div>
             </div>
           );
         })}

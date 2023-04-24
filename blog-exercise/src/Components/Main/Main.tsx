@@ -23,7 +23,8 @@ export function Main() {
       Promise.all(promises).then((results) => {
         results.forEach(([url, metadata]) => {
           const alt = metadata?.customMetadata?.imageName ?? "";
-          imageData.push({ url, alt });
+          const likeCount = metadata.customMetadata.likeCount;
+          imageData.push({ url, alt, likeCount });
         });
 
         setPictureList(imageData);

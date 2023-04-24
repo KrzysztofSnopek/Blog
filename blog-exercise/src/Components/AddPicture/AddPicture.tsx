@@ -21,6 +21,7 @@ export const AddPicture = observer(() => {
       customMetadata: {
         createdBy: `${userName}`,
         imageName: `${pictureName}`,
+        likeCount: "0",
       },
     };
 
