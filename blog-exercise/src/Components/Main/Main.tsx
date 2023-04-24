@@ -71,15 +71,17 @@ export function Main() {
         {pictureList.map((item, index) => {
           return (
             <div
-              className="w-1/4 p-8 flex justify-center max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl cursor-pointer hover:opacity-70"
+              className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl hover:opacity-70 cursor-pointer"
               onClick={() => getImg(item.url)}
               key={`${index}-${item.url}`}
             >
+              <div className="px-6 pt-6 text-center">{item.alt}</div>
               <img
-                className="object-contain max-w-full h-auto"
+                className="object-contain max-h-full max-w-full p-6"
                 src={item.url}
                 alt={item.alt}
               />
+              <div className="pb-4 text-center">{item.likeCount}</div>
             </div>
           );
         })}
