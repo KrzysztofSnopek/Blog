@@ -4,13 +4,7 @@ import { ref, listAll, getDownloadURL, getMetadata } from "firebase/storage";
 import { auth } from "../../firebase";
 import { Loader } from "../../Helpers/Loader";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
-
-export interface UploadedImage {
-  url: string;
-  alt: string;
-  storagePathElement: string;
-  likeCount: number;
-}
+import { UploadedImage } from "../../Helpers/PhotoRepository";
 
 export function ViewYours() {
   const [pictureList, setPictureList] = useState<UploadedImage[]>([]);

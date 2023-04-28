@@ -6,16 +6,16 @@ import {
   getDownloadURL,
   getMetadata,
   updateMetadata,
-  list,
 } from "firebase/storage";
 import { Loader } from "../../Helpers/Loader";
-import { UploadedImage } from "../ViewYours/ViewYours";
+import { UploadedImage, Like } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
 
 export function Main() {
   const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLiked, setIsLiked] = useState<Like[]>([]);
   const pictureListRef = ref(storage, `projectFiles`);
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
@@ -52,19 +52,26 @@ export function Main() {
     setIsImgFullScreen(true);
   };
 
-  const addLike = (item: UploadedImage) => {
-    const newLikeMetadata = {
+  const addLike = (item: UploadedImage, id: number) => {
+    const newAddLikeMetadata = {
       customMetadata: {
         likeCount: `${Number(item.likeCount) + 1}`,
       },
     };
 
+    const newRemoveLikeMetadata = {
+      customMetadata: {
+        likeCount: `${Number(item.likeCount) - 1}`,
+      },
+    };
+
     const countRef = ref(storage, `projectFiles/${item.storagePathElement}`);
 
-    updateMetadata(countRef, newLikeMetadata).then((metadata) => {
-      console.log(metadata);
+    updateMetadata(countRef, newAddLikeMetadata).then((metadata) => {
       setLikeNumber(metadata.customMetadata.likeCount);
     });
+
+    // setIsLiked();
   };
 
   return (
@@ -108,7 +115,7 @@ export function Main() {
               />
               <div className="pb-8 text-xl text-slate-950 fixed -right-4 flex flex-col items-center">
                 <span className="p-2 cursor-pointer">
-                  <BsSuitHeartFill onClick={() => addLike(item)} />
+                  <BsSuitHeartFill onClick={() => addLike(item, index)} />
                 </span>
                 <span className="">{item.likeCount}</span>
               </div>

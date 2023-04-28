@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { storage } from "../../firebase";
 import { ref, uploadString } from "firebase/storage";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
+import { addDoc, collection, serverTimestamp } from "@firebase/firestore";
 import { observer } from "mobx-react";
 import { v4 } from "uuid";
 
 export const AddPicture = observer(() => {
   const [filebase64, setFileBase64] = useState<string>("");
   const [pictureName, setPictureName] = useState<string>("");
-  const userName = auth.currentUser?.displayName;
+  const userName = auth.currentUser?.displayName ?? "";
 
   const handleImageUpload = async (e: any) => {
     e.preventDefault();
@@ -17,12 +18,22 @@ export const AddPicture = observer(() => {
     const storagePathElement = userName + "_" + v4();
 
     const imageRef = ref(storage, `projectFiles/${storagePathElement}`);
+    const likedPhotosRef = collection(db, `Photos/${userName}`);
+
+    const uploadLikedData = async () => {
+      await addDoc(likedPhotosRef, {
+        isLiked: false,
+        timestamp: serverTimestamp(),
+        user: auth.currentUser?.displayName,
+        storageElement: storagePathElement,
+      });
+    };
 
     const metadata = {
       customMetadata: {
-        createdBy: `${userName}`,
-        imageName: `${pictureName}`,
-        storagePathElement: `${storagePathElement}`,
+        createdBy: userName,
+        imageName: pictureName,
+        storagePathElement: storagePathElement,
         likeCount: "0",
       },
     };
@@ -30,6 +41,7 @@ export const AddPicture = observer(() => {
     await uploadString(imageRef, filebase64, "base64", metadata).then(() => {
       alert("uploaded to the storage");
     });
+    await uploadLikedData();
   };
 
   function convertFile(files: FileList | null): void {

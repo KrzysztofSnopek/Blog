@@ -29,7 +29,7 @@ export const AddComment = observer(() => {
 
   useEffect(() => {
     const queryMessages = query(commentsRef, orderBy("timestamp"));
-    const unsuscribe = onSnapshot(queryMessages, (snapshot) => {
+    const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
       let messagesArr: Messages[] = [];
       snapshot.forEach((doc) => {
         messagesArr.push({ ...doc.data(), id: doc.id } as Messages);
@@ -37,7 +37,7 @@ export const AddComment = observer(() => {
       setMessages(messagesArr);
     });
 
-    return () => unsuscribe();
+    return () => unsubscribe();
   }, []);
 
   const handleCommentChange = (
