@@ -32,9 +32,8 @@ export function Main() {
       Promise.all(promises).then((results) => {
         results.forEach(([url, metadata]) => {
           const alt = metadata?.customMetadata?.imageName ?? "";
-          const likeCount = metadata.customMetadata.likeCount;
           const storagePathElement = metadata.customMetadata.storagePathElement;
-          imageData.push({ url, alt, storagePathElement, likeCount });
+          imageData.push({ url, alt, storagePathElement });
         });
 
         setPictureList(imageData);
@@ -55,20 +54,20 @@ export function Main() {
   const addLike = (item: UploadedImage, id: number) => {
     const newAddLikeMetadata = {
       customMetadata: {
-        likeCount: `${Number(item.likeCount) + 1}`,
+        likeCount: `${Number() + 1}`,
       },
     };
 
     const newRemoveLikeMetadata = {
       customMetadata: {
-        likeCount: `${Number(item.likeCount) - 1}`,
+        likeCount: `${Number() - 1}`,
       },
     };
 
     const countRef = ref(storage, `projectFiles/${item.storagePathElement}`);
 
     updateMetadata(countRef, newAddLikeMetadata).then((metadata) => {
-      setLikeNumber(metadata.customMetadata.likeCount);
+      // setLikeNumber();
     });
 
     // setIsLiked();
@@ -117,7 +116,7 @@ export function Main() {
                 <span className="p-2 cursor-pointer">
                   <BsSuitHeartFill onClick={() => addLike(item, index)} />
                 </span>
-                <span className="">{item.likeCount}</span>
+                <span className="">{}</span>
               </div>
             </div>
           );

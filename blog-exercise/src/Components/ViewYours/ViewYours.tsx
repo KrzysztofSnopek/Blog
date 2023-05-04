@@ -31,9 +31,8 @@ export function ViewYours() {
       Promise.all(promises).then((results) => {
         results.forEach(([url, metadata]) => {
           const alt = metadata?.customMetadata?.imageName ?? "";
-          const likeCount = metadata.customMetadata.likeCount;
           const storagePathElement = metadata.customMetadata.storagePathElement;
-          imageData.push({ url, alt, storagePathElement, likeCount });
+          imageData.push({ url, alt, storagePathElement });
         });
 
         setPictureList(imageData);
@@ -87,7 +86,7 @@ export function ViewYours() {
                 src={item.url}
                 alt={item.alt}
               />
-              <div className="pb-4 text-center">{item.likeCount}</div>
+              <div className="pb-4 text-center">{}</div>
             </div>
           );
         })}

@@ -30,11 +30,11 @@ export const AddPicture = observer(() => {
     };
 
     const metadata = {
+      timeCreated: serverTimestamp(),
       customMetadata: {
         createdBy: userName,
         imageName: pictureName,
         storagePathElement: storagePathElement,
-        likeCount: "0",
       },
     };
 
@@ -48,7 +48,6 @@ export const AddPicture = observer(() => {
     if (files) {
       const fileRef = files[0] || "";
       const fileType: string = fileRef.type || "";
-      console.log("This file upload is of type:", fileType);
       const reader = new FileReader();
       reader.readAsBinaryString(fileRef);
       reader.onload = (e: any) => {
