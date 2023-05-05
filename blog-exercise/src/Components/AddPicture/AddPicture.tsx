@@ -2,7 +2,7 @@ import { useState } from "react";
 import { storage } from "../../firebase";
 import { ref, uploadString } from "firebase/storage";
 import { auth, db } from "../../firebase";
-import { addDoc, collection, serverTimestamp } from "@firebase/firestore";
+import { serverTimestamp } from "@firebase/firestore";
 import { observer } from "mobx-react";
 import { v4 } from "uuid";
 
@@ -31,19 +31,6 @@ export const AddPicture = observer(() => {
     await uploadString(imageRef, filebase64, "base64", metadata).then(() => {
       alert("uploaded to the storage");
     });
-  };
-
-  const handleLikeDataCreation = async (e: any) => {
-    const likedPhotosRef = collection(db, `Photos/${userName}`);
-
-    const uploadLikedData = async () => {
-      await addDoc(likedPhotosRef, {
-        isLiked: false,
-        timestamp: serverTimestamp(),
-        user: auth.currentUser?.displayName,
-        storageElement: storagePathElement,
-      });
-    };
   };
 
   const convertFile = (files: FileList | null): void => {

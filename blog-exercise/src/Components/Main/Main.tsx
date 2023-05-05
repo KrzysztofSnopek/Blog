@@ -26,10 +26,11 @@ export function Main() {
   const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLiked, setIsLiked] = useState<Like[]>([]);
-  const pictureListRef = ref(storage, `projectFiles`);
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
   const [likeNumber, setLikeNumber] = useState<number>(0);
+  const pictureListRef = ref(storage, `projectFiles`);
+  const likedPhotosRef = doc(db, "Photos", `${auth.currentUser?.email}`);
 
   useEffect(() => {
     const imageData: UploadedImage[] = [];
@@ -62,16 +63,19 @@ export function Main() {
   };
 
   const handleLikeDataCreation = async (url: string) => {
-    const likedPhotosRef = doc(db, "Photos", `${auth.currentUser?.email}`);
-
     await setDoc(
       likedPhotosRef,
       { likedPhotos: arrayUnion(url) },
       { merge: true }
     );
+  };
 
-    // setDoc(likedPhotosRef, { likedPhotos: ["false"] }, { merge: true });
-    // await updateDoc(likedPhotosRef, { likedPhotos: arrayRemove(url) });
+  const handleLikeDataRemoval = async (url: string) => {
+    await setDoc(
+      likedPhotosRef,
+      { likedPhotos: arrayRemove(url) },
+      { merge: true }
+    );
   };
 
   const addLike = (item: UploadedImage, id: number) => {
@@ -141,6 +145,12 @@ export function Main() {
                     onClick={() => {
                       addLike(item, index);
                       handleLikeDataCreation(item.url);
+                    }}
+                  />
+                  <BsSuitHeart
+                    onClick={() => {
+                      addLike(item, index);
+                      handleLikeDataRemoval(item.url);
                     }}
                   />
                 </span>
