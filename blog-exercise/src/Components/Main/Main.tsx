@@ -7,6 +7,16 @@ import {
   getMetadata,
   updateMetadata,
 } from "firebase/storage";
+import {
+  doc,
+  collection,
+  addDoc,
+  setDoc,
+  updateDoc,
+  arrayRemove,
+  arrayUnion,
+} from "@firebase/firestore";
+import { auth, db } from "../../firebase";
 import { Loader } from "../../Helpers/Loader";
 import { UploadedImage, Like } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
@@ -49,6 +59,19 @@ export function Main() {
   const getImg = (imgUrl: string) => {
     setTempImgURL(imgUrl);
     setIsImgFullScreen(true);
+  };
+
+  const handleLikeDataCreation = async (url: string) => {
+    const likedPhotosRef = doc(db, "Photos", `${auth.currentUser?.email}`);
+
+    await setDoc(
+      likedPhotosRef,
+      { likedPhotos: arrayUnion(url) },
+      { merge: true }
+    );
+
+    // setDoc(likedPhotosRef, { likedPhotos: ["false"] }, { merge: true });
+    // await updateDoc(likedPhotosRef, { likedPhotos: arrayRemove(url) });
   };
 
   const addLike = (item: UploadedImage, id: number) => {
@@ -114,7 +137,12 @@ export function Main() {
               />
               <div className="pb-8 text-xl text-slate-950 fixed -right-4 flex flex-col items-center">
                 <span className="p-2 cursor-pointer">
-                  <BsSuitHeartFill onClick={() => addLike(item, index)} />
+                  <BsSuitHeartFill
+                    onClick={() => {
+                      addLike(item, index);
+                      handleLikeDataCreation(item.url);
+                    }}
+                  />
                 </span>
                 <span className="">{}</span>
               </div>

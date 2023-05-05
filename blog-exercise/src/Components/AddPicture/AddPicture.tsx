@@ -10,24 +10,14 @@ export const AddPicture = observer(() => {
   const [filebase64, setFileBase64] = useState<string>("");
   const [pictureName, setPictureName] = useState<string>("");
   const userName = auth.currentUser?.displayName ?? "";
+  const storagePathElement = userName + "_" + v4();
 
   const handleImageUpload = async (e: any) => {
     e.preventDefault();
 
     if (filebase64 === "") return;
-    const storagePathElement = userName + "_" + v4();
 
     const imageRef = ref(storage, `projectFiles/${storagePathElement}`);
-    const likedPhotosRef = collection(db, `Photos/${userName}`);
-
-    const uploadLikedData = async () => {
-      await addDoc(likedPhotosRef, {
-        isLiked: false,
-        timestamp: serverTimestamp(),
-        user: auth.currentUser?.displayName,
-        storageElement: storagePathElement,
-      });
-    };
 
     const metadata = {
       timeCreated: serverTimestamp(),
@@ -41,10 +31,22 @@ export const AddPicture = observer(() => {
     await uploadString(imageRef, filebase64, "base64", metadata).then(() => {
       alert("uploaded to the storage");
     });
-    await uploadLikedData();
   };
 
-  function convertFile(files: FileList | null): void {
+  const handleLikeDataCreation = async (e: any) => {
+    const likedPhotosRef = collection(db, `Photos/${userName}`);
+
+    const uploadLikedData = async () => {
+      await addDoc(likedPhotosRef, {
+        isLiked: false,
+        timestamp: serverTimestamp(),
+        user: auth.currentUser?.displayName,
+        storageElement: storagePathElement,
+      });
+    };
+  };
+
+  const convertFile = (files: FileList | null): void => {
     if (files) {
       const fileRef = files[0] || "";
       const fileType: string = fileRef.type || "";
@@ -55,7 +57,7 @@ export const AddPicture = observer(() => {
         setFileBase64(`${btoa(e.target.result)}`);
       };
     }
-  }
+  };
 
   return (
     <div>
