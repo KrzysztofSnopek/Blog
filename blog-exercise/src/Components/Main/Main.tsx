@@ -10,15 +10,21 @@ import {
 import {
   doc,
   collection,
-  addDoc,
   setDoc,
-  updateDoc,
   arrayRemove,
   arrayUnion,
+  onSnapshot,
+  query,
+  getDoc,
+  DocumentData,
 } from "@firebase/firestore";
 import { auth, db } from "../../firebase";
 import { Loader } from "../../Helpers/Loader";
-import { UploadedImage, Like } from "../../Helpers/PhotoRepository";
+import {
+  UploadedImage,
+  Like,
+  LikedPhotos,
+} from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
 
@@ -31,6 +37,29 @@ export function Main() {
   const [likeNumber, setLikeNumber] = useState<number>(0);
   const pictureListRef = ref(storage, `projectFiles`);
   const likedPhotosRef = doc(db, "Photos", `${auth.currentUser?.email}`);
+  const [likedPhotos, setLikedPhotos] = useState<LikedPhotos>();
+
+  const likedPhotosCollectionRef = doc(
+    db,
+    "Photos",
+    `${auth.currentUser?.email}`
+  );
+
+  onSnapshot(likedPhotosCollectionRef, (doc) => {
+    const likedPhotos = Object.values(doc.data() as LikedPhotos);
+  });
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(likedPhotosCollectionRef, (doc) => {
+      const likedPhotos = Object.values(doc.data() as LikedPhotos);
+
+      setLikedPhotos(likedPhotos[0]);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  console.log(likedPhotos);
 
   useEffect(() => {
     const imageData: UploadedImage[] = [];
@@ -93,11 +122,7 @@ export function Main() {
 
     const countRef = ref(storage, `projectFiles/${item.storagePathElement}`);
 
-    updateMetadata(countRef, newAddLikeMetadata).then((metadata) => {
-      // setLikeNumber();
-    });
-
-    // setIsLiked();
+    updateMetadata(countRef, newAddLikeMetadata).then((metadata) => {});
   };
 
   return (

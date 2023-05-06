@@ -8,3 +8,7 @@ export interface Like {
   isLiked: boolean;
   photoId: number;
 }
+
+export interface LikedPhotos {
+  likedPhotos: string[];
+}
