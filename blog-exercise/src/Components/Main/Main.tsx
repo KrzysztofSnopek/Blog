@@ -9,14 +9,10 @@ import {
 } from "firebase/storage";
 import {
   doc,
-  collection,
   setDoc,
   arrayRemove,
   arrayUnion,
   onSnapshot,
-  query,
-  getDoc,
-  DocumentData,
 } from "@firebase/firestore";
 import { auth, db } from "../../firebase";
 import { Loader } from "../../Helpers/Loader";
@@ -31,13 +27,13 @@ import { BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
 export function Main() {
   const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isLiked, setIsLiked] = useState<Like[]>([]);
+  // const [isLiked, setIsLiked] = useState<Like[]>([]);
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
   const [likeNumber, setLikeNumber] = useState<number>(0);
   const pictureListRef = ref(storage, `projectFiles`);
   const likedPhotosRef = doc(db, "Photos", `${auth.currentUser?.email}`);
-  const [likedPhotos, setLikedPhotos] = useState<LikedPhotos>();
+  const [likedPhotos, setLikedPhotos] = useState<LikedPhotos | null>();
 
   const likedPhotosCollectionRef = doc(
     db,
@@ -45,9 +41,9 @@ export function Main() {
     `${auth.currentUser?.email}`
   );
 
-  onSnapshot(likedPhotosCollectionRef, (doc) => {
-    const likedPhotos = Object.values(doc.data() as LikedPhotos);
-  });
+  // onSnapshot(likedPhotosCollectionRef, (doc) => {
+  //   const likedPhotos = Object.values(doc.data() as LikedPhotos);
+  // });
 
   useEffect(() => {
     const unsubscribe = onSnapshot(likedPhotosCollectionRef, (doc) => {
@@ -59,7 +55,7 @@ export function Main() {
     return () => unsubscribe();
   }, []);
 
-  console.log(likedPhotos);
+  // console.log(likedPhotos);
 
   useEffect(() => {
     const imageData: UploadedImage[] = [];
@@ -105,6 +101,22 @@ export function Main() {
       { likedPhotos: arrayRemove(url) },
       { merge: true }
     );
+  };
+
+  function ClickToLike() {
+    return <div></div>;
+  }
+
+  function ClickToDislike() {
+    return <div></div>;
+  }
+
+  const isPhotoURLLiked = (itemUrl: string) => {
+    if (Array.isArray(likedPhotos) && likedPhotos.includes(itemUrl)) {
+      return <ClickToDislike />;
+    } else {
+      return <ClickToLike />;
+    }
   };
 
   const addLike = (item: UploadedImage, id: number) => {
@@ -179,7 +191,7 @@ export function Main() {
                     }}
                   />
                 </span>
-                <span className="">{}</span>
+                {/* <span className="">{item.url}</span> */}
               </div>
             </div>
           );
