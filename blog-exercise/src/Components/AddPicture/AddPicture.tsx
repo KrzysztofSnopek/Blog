@@ -25,6 +25,7 @@ export const AddPicture = observer(() => {
         createdBy: userName,
         imageName: pictureName,
         storagePathElement: storagePathElement,
+        likeCount: "0",
       },
     };
 
