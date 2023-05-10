@@ -27,23 +27,18 @@ import { BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
 export function Main() {
   const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  // const [isLiked, setIsLiked] = useState<Like[]>([]);
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
   const [likeNumber, setLikeNumber] = useState<number>(0);
   const pictureListRef = ref(storage, `projectFiles`);
   const likedPhotosRef = doc(db, "Photos", `${auth.currentUser?.email}`);
-  const [likedPhotos, setLikedPhotos] = useState<LikedPhotos | null>();
+  const [likedPhotos, setLikedPhotos] = useState<LikedPhotos>();
 
   const likedPhotosCollectionRef = doc(
     db,
     "Photos",
     `${auth.currentUser?.email}`
   );
-
-  // onSnapshot(likedPhotosCollectionRef, (doc) => {
-  //   const likedPhotos = Object.values(doc.data() as LikedPhotos);
-  // });
 
   useEffect(() => {
     const unsubscribe = onSnapshot(likedPhotosCollectionRef, (doc) => {
@@ -54,8 +49,6 @@ export function Main() {
 
     return () => unsubscribe();
   }, []);
-
-  // console.log(likedPhotos);
 
   useEffect(() => {
     const imageData: UploadedImage[] = [];
@@ -68,8 +61,9 @@ export function Main() {
       Promise.all(promises).then((results) => {
         results.forEach(([url, metadata]) => {
           const alt = metadata?.customMetadata?.imageName ?? "";
+          const likeCount = metadata.customMetadata.likeCount;
           const storagePathElement = metadata.customMetadata.storagePathElement;
-          imageData.push({ url, alt, storagePathElement });
+          imageData.push({ url, alt, storagePathElement, likeCount });
         });
 
         setPictureList(imageData);
@@ -103,52 +97,59 @@ export function Main() {
     );
   };
 
-  function ClickToLike(item: UploadedImage, idx: number) {
+  function ClickToLike(item: UploadedImage) {
     return (
       <BsSuitHeart
         onClick={() => {
-          addLike(item, idx);
+          changeLikeStatus(item, additive);
           handleLikeDataCreation(item.url);
         }}
       />
     );
   }
 
-  function ClickToDislike(item: UploadedImage, idx: number) {
+  function ClickToDislike(item: UploadedImage) {
     return (
       <BsSuitHeartFill
         onClick={() => {
-          addLike(item, idx);
+          changeLikeStatus(item, subtractive);
           handleLikeDataRemoval(item.url);
         }}
       />
     );
   }
 
-  const isPhotoURLLiked = (item: UploadedImage, index: number) => {
+  const isPhotoURLLiked = (item: UploadedImage) => {
     if (Array.isArray(likedPhotos) && likedPhotos.includes(item.url)) {
-      return <div>{ClickToDislike(item, index)}</div>;
+      return <div>{ClickToDislike(item)}</div>;
     } else {
-      return <div>{ClickToLike(item, index)}</div>;
+      return <div>{ClickToLike(item)}</div>;
     }
   };
 
-  const addLike = (item: UploadedImage, id: number) => {
+  const additive = (item: UploadedImage) => {
+    return Number(item.likeCount) + 1;
+  };
+
+  const subtractive = (item: UploadedImage) => {
+    return Number(item.likeCount) - 1;
+  };
+
+  const changeLikeStatus = (
+    item: UploadedImage,
+    addOrRem: (item: UploadedImage) => number
+  ) => {
     const newAddLikeMetadata = {
       customMetadata: {
-        likeCount: `${Number() + 1}`,
-      },
-    };
-
-    const newRemoveLikeMetadata = {
-      customMetadata: {
-        likeCount: `${Number() - 1}`,
+        likeCount: `${addOrRem(item)}`,
       },
     };
 
     const countRef = ref(storage, `projectFiles/${item.storagePathElement}`);
 
-    updateMetadata(countRef, newAddLikeMetadata).then((metadata) => {});
+    updateMetadata(countRef, newAddLikeMetadata).then((metadata) => {
+      setLikeNumber(metadata.customMetadata.likeCount);
+    });
   };
 
   return (
@@ -192,7 +193,8 @@ export function Main() {
               />
               <div className="pb-8 text-xl text-slate-950 fixed -right-4 flex flex-col items-center">
                 <span className="p-2 cursor-pointer">
-                  <span className="">{isPhotoURLLiked(item, index)}</span>
+                  <span className="">{isPhotoURLLiked(item)}</span>
+                  <span>{item.likeCount}</span>
                 </span>
               </div>
             </div>

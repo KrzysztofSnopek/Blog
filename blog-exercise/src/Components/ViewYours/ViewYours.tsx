@@ -32,7 +32,8 @@ export function ViewYours() {
         results.forEach(([url, metadata]) => {
           const alt = metadata?.customMetadata?.imageName ?? "";
           const storagePathElement = metadata.customMetadata.storagePathElement;
-          imageData.push({ url, alt, storagePathElement });
+          const likeCount = metadata.customMetadata.likeCount;
+          imageData.push({ url, alt, storagePathElement, likeCount });
         });
 
         setPictureList(imageData);
