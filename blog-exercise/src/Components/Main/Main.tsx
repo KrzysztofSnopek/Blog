@@ -103,19 +103,33 @@ export function Main() {
     );
   };
 
-  function ClickToLike() {
-    return <div></div>;
+  function ClickToLike(item: UploadedImage, idx: number) {
+    return (
+      <BsSuitHeart
+        onClick={() => {
+          addLike(item, idx);
+          handleLikeDataCreation(item.url);
+        }}
+      />
+    );
   }
 
-  function ClickToDislike() {
-    return <div></div>;
+  function ClickToDislike(item: UploadedImage, idx: number) {
+    return (
+      <BsSuitHeartFill
+        onClick={() => {
+          addLike(item, idx);
+          handleLikeDataRemoval(item.url);
+        }}
+      />
+    );
   }
 
-  const isPhotoURLLiked = (itemUrl: string) => {
-    if (Array.isArray(likedPhotos) && likedPhotos.includes(itemUrl)) {
-      return <ClickToDislike />;
+  const isPhotoURLLiked = (item: UploadedImage, index: number) => {
+    if (Array.isArray(likedPhotos) && likedPhotos.includes(item.url)) {
+      return <div>{ClickToDislike(item, index)}</div>;
     } else {
-      return <ClickToLike />;
+      return <div>{ClickToLike(item, index)}</div>;
     }
   };
 
@@ -178,20 +192,8 @@ export function Main() {
               />
               <div className="pb-8 text-xl text-slate-950 fixed -right-4 flex flex-col items-center">
                 <span className="p-2 cursor-pointer">
-                  <BsSuitHeartFill
-                    onClick={() => {
-                      addLike(item, index);
-                      handleLikeDataCreation(item.url);
-                    }}
-                  />
-                  <BsSuitHeart
-                    onClick={() => {
-                      addLike(item, index);
-                      handleLikeDataRemoval(item.url);
-                    }}
-                  />
+                  <span className="">{isPhotoURLLiked(item, index)}</span>
                 </span>
-                {/* <span className="">{item.url}</span> */}
               </div>
             </div>
           );
