@@ -13,14 +13,11 @@ import {
   arrayRemove,
   arrayUnion,
   onSnapshot,
+  orderBy,
 } from "@firebase/firestore";
 import { auth, db } from "../../firebase";
 import { Loader } from "../../Helpers/Loader";
-import {
-  UploadedImage,
-  Like,
-  LikedPhotos,
-} from "../../Helpers/PhotoRepository";
+import { UploadedImage, LikedPhotos } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
 
