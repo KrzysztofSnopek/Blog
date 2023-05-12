@@ -40,6 +40,10 @@ export const AddPicture = observer(() => {
     }
   };
 
+  const removeSelectedImage = () => {
+    setPicturePreview(undefined);
+  };
+
   const convertFile = (files: FileList | null): void => {
     if (files) {
       const fileRef = files[0] || "";
@@ -53,37 +57,52 @@ export const AddPicture = observer(() => {
     }
   };
 
-  const removeSelectedImage = () => {
-    setPicturePreview(undefined);
-  };
-
   return (
-    <div>
-      <h1 className="font-bold p-2">Share your pictures with others here!</h1>
+    <div className="w-9/12 m-auto">
+      <div className="h-auto flex items-center flex-col">
+        <h1 className="font-bold p-2">Share your pictures with others here!</h1>
 
-      <form onSubmit={handleImageUpload} className="p-2 bg-orange-300">
-        <input
-          type="file"
-          id="photo-picker"
-          onChange={(e) => {
-            handlePictureChange(e);
-            convertFile(e.target.files);
-          }}
-        />
-        <input
-          type="text"
-          placeholder="Add picture name"
-          id="photo-name"
-          onChange={(e) => setPictureName(e.target.value)}
-        />
-        <button type="submit">Share your picture!</button>
-      </form>
-      {picturePreview && (
-        <div>
-          <img src={URL.createObjectURL(picturePreview)} alt="Thumb" />
-          <button onClick={removeSelectedImage}>Remove This Image</button>
-        </div>
-      )}
+        <form
+          onSubmit={handleImageUpload}
+          className="min-w-full bg-orange-300 flex p-4 justify-between"
+        >
+          <input
+            type="file"
+            id="photo-picker"
+            className="p-4"
+            onChange={(e) => {
+              handlePictureChange(e);
+              convertFile(e.target.files);
+            }}
+          />
+          <input
+            className="p-4"
+            type="text"
+            placeholder="Add picture name"
+            id="photo-name"
+            onChange={(e) => setPictureName(e.target.value)}
+          />
+          <button type="submit" className="p-4">
+            Share your picture!
+          </button>
+        </form>
+
+        {picturePreview && (
+          <div className="h-1/4 max-w-screen-sm p-12">
+            <img
+              className="max-h-full"
+              src={URL.createObjectURL(picturePreview)}
+              alt="Thumb"
+            />
+            <button
+              onClick={removeSelectedImage}
+              className="bg-orange-300 w-full p-4 font-bold"
+            >
+              Close the image preview
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 });

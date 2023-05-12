@@ -13,7 +13,6 @@ import {
   arrayRemove,
   arrayUnion,
   onSnapshot,
-  orderBy,
 } from "@firebase/firestore";
 import { auth, db } from "../../firebase";
 import { Loader } from "../../Helpers/Loader";
