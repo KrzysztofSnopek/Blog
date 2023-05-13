@@ -16,6 +16,7 @@ export function Leaderboards() {
   const [likeNumber, setLikeNumber] = useState<number>(0);
   const pictureListRef = ref(storage, `projectFiles`);
   const [likedPhotos, setLikedPhotos] = useState<LikedPhotos>();
+  const [activePhoto, setActivePhoto] = useState<boolean[]>();
 
   const likedPhotosCollectionRef = doc(
     db,
@@ -58,8 +59,8 @@ export function Leaderboards() {
   pictureList.sort(function (a, b) {
     return b.likeCount - a.likeCount;
   });
-  if (pictureList.length > 5) {
-    setPictureList(pictureList.slice(0, 5));
+  if (pictureList.length > 6) {
+    setPictureList(pictureList.slice(0, 6));
   }
 
   if (isLoading) {
@@ -71,50 +72,31 @@ export function Leaderboards() {
     setIsImgFullScreen(true);
   };
 
+  console.log(tempImgURL);
+
+  const displayPhoto = (index: number) => {
+    setActivePhoto([false]);
+  };
+
   return (
-    <div>
-      <div
-        className={
-          isImgFullScreen
-            ? "w-full min-h-screen fixed top-0 left-0 flex justify-center items-center bg-slate-900 bg-opacity-20 backdrop-blur-xl shadow-xl z-10"
-            : "hidden"
-        }
-      >
-        <div className="h-5/6">
-          <img
-            src={tempImgURL}
-            className="cursor-pointer max-h-screen"
-            alt=""
-            onClick={() => setIsImgFullScreen(false)}
-          />
-        </div>
-        <div
-          className="cursor-pointer text-slate-600 hover:text-orange-500 fixed top-4 right-4"
-          onClick={() => setIsImgFullScreen(false)}
-        >
-          <DisabledByDefaultOutlinedIcon fontSize="large" color="inherit" />
-        </div>
+    <div className="max-h-screen">
+      <div className="rounded-2xl">
+        <img className="object-cover m-auto p-8 " src={tempImgURL} alt="" />
       </div>
 
-      <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
+      <div className="grid grid-cols-6 bg-slate-400">
         {pictureList.map((item, index) => {
           return (
             <div
-              className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl "
+              className="w-1/8 flex justify-center items-center bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl p-4"
               key={`${index}-${item.url}`}
             >
-              <div className="px-6 pt-6 text-center">{item.alt}</div>
               <img
-                className="object-contain max-h-full max-w-full p-6 hover:opacity-70 cursor-pointer"
+                className="min-h-full min-w-full hover:opacity-70 cursor-pointer object-cover rounded-2xl"
                 src={item.url}
                 alt={item.alt}
                 onClick={() => getImg(item.url)}
               />
-              <div className="pb-8 text-xl text-slate-950 fixed -right-4 flex flex-col items-center">
-                <span className="p-2 cursor-pointer">
-                  <span>{item.likeCount}</span>
-                </span>
-              </div>
             </div>
           );
         })}
