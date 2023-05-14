@@ -79,16 +79,20 @@ export function Leaderboards() {
   };
 
   return (
-    <div className="max-h-screen">
-      <div className="rounded-2xl">
-        <img className="object-cover m-auto p-8 " src={tempImgURL} alt="" />
+    <div className="flex flex-col content-end min-h-[calc(screen-5rem)]">
+      <div className="">
+        <img
+          className="m-auto max-h-[calc(60vh+5rem)]"
+          src={tempImgURL}
+          alt=""
+        />
       </div>
 
       <div className="grid grid-cols-6 bg-slate-400">
         {pictureList.map((item, index) => {
           return (
             <div
-              className="w-1/8 flex justify-center items-center bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl p-4"
+              className="flex justify-center items-center bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl"
               key={`${index}-${item.url}`}
             >
               <img
