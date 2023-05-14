@@ -16,7 +16,6 @@ export function Leaderboards() {
   const [likeNumber, setLikeNumber] = useState<number>(0);
   const pictureListRef = ref(storage, `projectFiles`);
   const [likedPhotos, setLikedPhotos] = useState<LikedPhotos>();
-  const [activePhoto, setActivePhoto] = useState<boolean[]>();
 
   const likedPhotosCollectionRef = doc(
     db,
@@ -72,31 +71,17 @@ export function Leaderboards() {
     setIsImgFullScreen(true);
   };
 
-  console.log(tempImgURL);
-
-  const displayPhoto = (index: number) => {
-    setActivePhoto([false]);
-  };
-
   return (
-    <div className="flex flex-col content-end min-h-[calc(screen-5rem)]">
-      <div className="">
-        <img
-          className="m-auto max-h-[calc(60vh+5rem)]"
-          src={tempImgURL}
-          alt=""
-        />
-      </div>
-
-      <div className="grid grid-cols-6 bg-slate-400">
+    <div className="flex flex-row content-end">
+      <div className="grid grid-cols-6 grid-rows-3 bg-slate-400">
         {pictureList.map((item, index) => {
           return (
             <div
-              className="flex justify-center items-center bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl"
+              className="flex justify-center items-center bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl p-4"
               key={`${index}-${item.url}`}
             >
               <img
-                className="min-h-full min-w-full hover:opacity-70 cursor-pointer object-cover rounded-2xl"
+                className="hover:opacity-70 object-cover cursor-pointer rounded-2xl h-[calc((100vh-11rem)/3)]"
                 src={item.url}
                 alt={item.alt}
                 onClick={() => getImg(item.url)}
@@ -104,6 +89,13 @@ export function Leaderboards() {
             </div>
           );
         })}
+        <div className="order-4 col-start-2 col-end-6 row-start-1 row-end-4 flex">
+          <img
+            className="m-auto max-h-[calc(100vh-5rem)]"
+            src={tempImgURL}
+            alt=""
+          />
+        </div>
       </div>
     </div>
   );
