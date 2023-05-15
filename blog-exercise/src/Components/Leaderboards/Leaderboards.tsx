@@ -66,6 +66,12 @@ export function Leaderboards() {
     return <Loader />;
   }
 
+  const leaderURL = (url: string) => {
+    if (url === "") {
+      return pictureList[0].url;
+    } else return tempImgURL;
+  };
+
   const getImg = (imgUrl: string) => {
     setTempImgURL(imgUrl);
     setIsImgFullScreen(true);
@@ -92,7 +98,7 @@ export function Leaderboards() {
         <div className="order-4 col-start-2 col-end-6 row-start-1 row-end-4 flex">
           <img
             className="m-auto max-h-[calc(100vh-5rem)]"
-            src={tempImgURL}
+            src={leaderURL(tempImgURL)}
             alt=""
           />
         </div>
