@@ -21,6 +21,10 @@ To run this project, install it locally using npm:
 $ cd ../Blog/blog-exercise
 $ npm install
 $ npm install react-scripts
+$ npm install firebase
+$ npm install --save mobx
+$ npm install @mui/material @emotion/react @emotion/styled
+& npm install react-icons --save
 $ npm start
 
 ```
