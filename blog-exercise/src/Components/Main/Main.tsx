@@ -16,6 +16,7 @@ import {
 } from "@firebase/firestore";
 import { auth, db } from "../../firebase";
 import { Loader } from "../../Helpers/Loader";
+import { useDebounce } from "../../Helpers/useDebounce";
 import { UploadedImage, LikedPhotos } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
@@ -93,7 +94,7 @@ export function Main() {
     );
   };
 
-  function ClickToLike(item: UploadedImage) {
+  const ClickToLike = (item: UploadedImage) => {
     return (
       <BsSuitHeart
         onClick={() => {
@@ -102,9 +103,9 @@ export function Main() {
         }}
       />
     );
-  }
+  };
 
-  function ClickToDislike(item: UploadedImage) {
+  const ClickToDislike = (item: UploadedImage) => {
     return (
       <BsSuitHeartFill
         onClick={() => {
@@ -113,7 +114,7 @@ export function Main() {
         }}
       />
     );
-  }
+  };
 
   const isPhotoURLLiked = (item: UploadedImage) => {
     if (Array.isArray(likedPhotos) && likedPhotos.includes(item.url)) {
