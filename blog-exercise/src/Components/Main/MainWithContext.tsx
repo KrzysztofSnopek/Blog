@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { storage } from "../../firebase";
 import {
   ref,
@@ -20,14 +20,15 @@ import { useDebounce } from "../../Helpers/useDebounce";
 import { UploadedImage, LikedPhotos } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
+import { PhotoStoreContext } from "../../Helpers/PhotoStore";
 
-export function Main() {
-  const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
+export function MainWithContext() {
+  const PhotoStore = useContext(PhotoStoreContext);
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
   const [likeNumber, setLikeNumber] = useState<number>(0);
-  const pictureListRef = ref(storage, `projectFiles`);
   const likedPhotosRef = doc(db, "Photos", `${auth.currentUser?.email}`);
   const [likedPhotos, setLikedPhotos] = useState<LikedPhotos>();
 
@@ -50,25 +51,8 @@ export function Main() {
   }, []);
 
   useEffect(() => {
-    const imageData: UploadedImage[] = [];
-
-    listAll(pictureListRef).then((response) => {
-      const promises = response.items.map((item) =>
-        Promise.all([getDownloadURL(item), getMetadata(item)])
-      );
-
-      Promise.all(promises).then((results) => {
-        results.forEach(([url, metadata]) => {
-          const alt = metadata?.customMetadata?.imageName ?? "";
-          const likeCount = metadata.customMetadata.likeCount;
-          const storagePathElement = metadata.customMetadata.storagePathElement;
-          imageData.push({ url, alt, storagePathElement, likeCount });
-        });
-
-        setPictureList(imageData);
-        setIsLoading(false);
-      });
-    });
+    PhotoStore.listAllPictures?.();
+    setIsLoading(false);
   }, [likeNumber]);
 
   if (isLoading) {
@@ -177,7 +161,7 @@ export function Main() {
       </div>
 
       <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
-        {pictureList.map((item, index) => {
+        {PhotoStore.pictureList?.map((item, index) => {
           return (
             <div
               className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl "

@@ -15,6 +15,7 @@ import {
 import { useContext } from "react";
 import { AuthStoreContext } from "./Components/Auth/AuthStore";
 import { observer } from "mobx-react";
+import { MainWithContext } from "./Components/Main/MainWithContext";
 
 export const App = observer((): JSX.Element => {
   const AuthStore = useContext(AuthStoreContext);
@@ -26,7 +27,7 @@ export const App = observer((): JSX.Element => {
         <Route path="leaderboards" element={<Leaderboards />} />
         <Route path="addpicture" element={<AddPicture />} />
         <Route path="viewyours" element={<ViewYours />} />
-        <Route path="signout" element={<Authentication />} />
+        <Route path="signout" element={<MainWithContext />} />
       </Route>
     )
   );
