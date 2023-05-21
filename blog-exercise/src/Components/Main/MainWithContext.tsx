@@ -6,6 +6,7 @@ import {
   getDownloadURL,
   getMetadata,
   updateMetadata,
+  StorageReference,
 } from "firebase/storage";
 import {
   doc,
@@ -20,17 +21,19 @@ import { useDebounce } from "../../Helpers/useDebounce";
 import { UploadedImage, LikedPhotos } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
-import { PhotoStoreContext } from "../../Helpers/PhotoStore";
+import { PhotoStoreContext, usePhotoStore } from "../../Helpers/PhotoStore";
+import { observer } from "mobx-react";
 
-export function MainWithContext() {
-  const PhotoStore = useContext(PhotoStoreContext);
-
+export const MainWithContext = observer(() => {
+  // const PhotoStore = useContext(PhotoStoreContext);
+  const photoStore = usePhotoStore();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
   const [likeNumber, setLikeNumber] = useState<number>(0);
   const likedPhotosRef = doc(db, "Photos", `${auth.currentUser?.email}`);
   const [likedPhotos, setLikedPhotos] = useState<LikedPhotos>();
+  // const pictureListRef = PhotoStore.pictureListRef;
 
   const likedPhotosCollectionRef = doc(
     db,
@@ -51,9 +54,34 @@ export function MainWithContext() {
   }, []);
 
   useEffect(() => {
-    PhotoStore.listAllPictures?.();
-    setIsLoading(false);
+    listAll(photoStore.pictureListRef).then((response) => {
+      const promises = response.items.map((item) =>
+        Promise.all([getDownloadURL(item), getMetadata(item)])
+      );
+
+      Promise.all(promises).then((results) => {
+        results.forEach(([url, metadata]) => {
+          const alt = metadata?.customMetadata?.imageName ?? "";
+          const likeCount = metadata.customMetadata.likeCount;
+          const storagePathElement = metadata.customMetadata.storagePathElement;
+          photoStore?.imageData?.push({
+            url,
+            alt,
+            storagePathElement,
+            likeCount,
+          });
+        });
+
+        photoStore.setPictureList(photoStore.imageData);
+
+        setIsLoading(false);
+      });
+    });
   }, [likeNumber]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   if (isLoading) {
     return <Loader />;
@@ -161,7 +189,7 @@ export function MainWithContext() {
       </div>
 
       <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
-        {PhotoStore.pictureList?.map((item, index) => {
+        {photoStore.pictureList?.map((item, index) => {
           return (
             <div
               className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl "
@@ -186,4 +214,4 @@ export function MainWithContext() {
       </div>
     </div>
   );
-}
+});

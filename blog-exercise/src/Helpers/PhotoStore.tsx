@@ -1,15 +1,17 @@
 import { makeAutoObservable } from "mobx";
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { UploadedImage } from "./PhotoRepository";
-import { getDownloadURL, getMetadata, listAll, ref } from "firebase/storage";
+import { StorageReference, ref } from "firebase/storage";
 import { storage } from "../firebase";
+import { error } from "console";
 
 export default class PhotoStore {
   constructor() {
-    makeAutoObservable(this, {});
+    makeAutoObservable(this);
   }
-  pictureListRef = ref(storage, `projectFiles`);
+  pictureListRef: StorageReference = ref(storage, `projectFiles`);
   likeNumber: number = 0;
+  isLoading: boolean = true;
   pictureList: UploadedImage[] = [];
   imageData: UploadedImage[] = [];
 
@@ -21,38 +23,34 @@ export default class PhotoStore {
     this.likeNumber = likeNumber;
   };
 
-  listAllPictures() {
-    listAll(this.pictureListRef).then((response) => {
-      const promises = response.items.map((item) =>
-        Promise.all([getDownloadURL(item), getMetadata(item)])
-      );
-
-      Promise.all(promises).then((results) => {
-        results.forEach(([url, metadata]) => {
-          const alt = metadata?.customMetadata?.imageName ?? "";
-          const likeCount = metadata.customMetadata.likeCount;
-          const storagePathElement = metadata.customMetadata.storagePathElement;
-          this.imageData.push({ url, alt, storagePathElement, likeCount });
-        });
-
-        this.setPictureList(this.imageData);
-      });
-    });
-  }
+  setIsLoading = (isLoading: boolean) => {
+    this.isLoading = isLoading;
+  };
 }
-
-export const PhotoStoreContext = React.createContext<Partial<PhotoStore>>({});
+type PhotoStoreContextValue = PhotoStore;
+export const PhotoStoreContext =
+  React.createContext<PhotoStoreContextValue | null>(null);
 
 type PhotoProviderProps = {
   children: React.ReactNode;
 };
 
-export function PhotoStoreProvider({ children }: PhotoProviderProps) {
-  const store = useRef(new PhotoStore());
+export function PhotoStoreContextProvider({ children }: PhotoProviderProps) {
+  const [store] = useState(() => new PhotoStore());
 
   return (
-    <PhotoStoreContext.Provider value={store.current}>
+    <PhotoStoreContext.Provider value={store}>
       {children}
     </PhotoStoreContext.Provider>
   );
+}
+
+export function usePhotoStore(): PhotoStoreContextValue {
+  const contextValue = useContext(PhotoStoreContext);
+  if (contextValue === null) {
+    throw new Error(
+      "usePhotoStore must be used within PhotoStoreContextProvider"
+    );
+  }
+  return contextValue;
 }

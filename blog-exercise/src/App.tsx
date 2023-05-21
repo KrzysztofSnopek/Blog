@@ -16,6 +16,7 @@ import { useContext } from "react";
 import { AuthStoreContext } from "./Components/Auth/AuthStore";
 import { observer } from "mobx-react";
 import { MainWithContext } from "./Components/Main/MainWithContext";
+import { PhotoStoreContextProvider } from "./Helpers/PhotoStore";
 
 export const App = observer((): JSX.Element => {
   const AuthStore = useContext(AuthStoreContext);
@@ -49,11 +50,11 @@ export const App = observer((): JSX.Element => {
 
 export function Root() {
   return (
-    <>
+    <PhotoStoreContextProvider>
       <Navbar />
       <div>
         <Outlet />
       </div>
-    </>
+    </PhotoStoreContextProvider>
   );
 }
