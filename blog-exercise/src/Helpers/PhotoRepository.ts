@@ -11,5 +11,5 @@ export interface Like {
 }
 
 export interface LikedPhotos {
-  likedPhotos: string[];
+  likedPhotos: string;
 }

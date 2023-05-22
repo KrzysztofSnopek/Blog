@@ -1,39 +1,21 @@
 import { useState, useEffect, useContext } from "react";
 import { storage } from "../../firebase";
-import {
-  ref,
-  listAll,
-  getDownloadURL,
-  getMetadata,
-  updateMetadata,
-  StorageReference,
-} from "firebase/storage";
-import {
-  doc,
-  setDoc,
-  arrayRemove,
-  arrayUnion,
-  onSnapshot,
-} from "@firebase/firestore";
+import { listAll, getDownloadURL, getMetadata } from "firebase/storage";
+import { doc, onSnapshot } from "@firebase/firestore";
 import { auth, db } from "../../firebase";
 import { Loader } from "../../Helpers/Loader";
 import { useDebounce } from "../../Helpers/useDebounce";
-import { UploadedImage, LikedPhotos } from "../../Helpers/PhotoRepository";
+import { LikedPhotos } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
-import { BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
-import { PhotoStoreContext, usePhotoStore } from "../../Helpers/PhotoStore";
+import { usePhotoStore } from "../../Helpers/PhotoStore";
 import { observer } from "mobx-react";
 
 export const MainWithContext = observer(() => {
-  // const PhotoStore = useContext(PhotoStoreContext);
   const photoStore = usePhotoStore();
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
-  const [likeNumber, setLikeNumber] = useState<number>(0);
-  const likedPhotosRef = doc(db, "Photos", `${auth.currentUser?.email}`);
-  const [likedPhotos, setLikedPhotos] = useState<LikedPhotos>();
-  // const pictureListRef = PhotoStore.pictureListRef;
 
   const likedPhotosCollectionRef = doc(
     db,
@@ -46,12 +28,12 @@ export const MainWithContext = observer(() => {
       if (doc.data() !== undefined) {
         const newPhotoData = doc.data() as LikedPhotos;
         const likedPhotos = Object.values(newPhotoData);
-        setLikedPhotos(likedPhotos[0]);
+        photoStore.setLikedPhotos(likedPhotos[0]);
       }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [photoStore]);
 
   useEffect(() => {
     listAll(photoStore.pictureListRef).then((response) => {
@@ -71,17 +53,11 @@ export const MainWithContext = observer(() => {
             likeCount,
           });
         });
-
         photoStore.setPictureList(photoStore.imageData);
-
         setIsLoading(false);
       });
     });
-  }, [likeNumber]);
-
-  if (isLoading) {
-    return <Loader />;
-  }
+  }, [photoStore]);
 
   if (isLoading) {
     return <Loader />;
@@ -90,77 +66,6 @@ export const MainWithContext = observer(() => {
   const getImg = (imgUrl: string) => {
     setTempImgURL(imgUrl);
     setIsImgFullScreen(true);
-  };
-
-  const handleLikeDataCreation = async (url: string) => {
-    await setDoc(
-      likedPhotosRef,
-      { likedPhotos: arrayUnion(url) },
-      { merge: true }
-    );
-  };
-
-  const handleLikeDataRemoval = async (url: string) => {
-    await setDoc(
-      likedPhotosRef,
-      { likedPhotos: arrayRemove(url) },
-      { merge: true }
-    );
-  };
-
-  const ClickToLike = (item: UploadedImage) => {
-    return (
-      <BsSuitHeart
-        onClick={() => {
-          changeLikeStatus(item, additive);
-          handleLikeDataCreation(item.url);
-        }}
-      />
-    );
-  };
-
-  const ClickToDislike = (item: UploadedImage) => {
-    return (
-      <BsSuitHeartFill
-        onClick={() => {
-          changeLikeStatus(item, subtractive);
-          handleLikeDataRemoval(item.url);
-        }}
-      />
-    );
-  };
-
-  const isPhotoURLLiked = (item: UploadedImage) => {
-    if (Array.isArray(likedPhotos) && likedPhotos.includes(item.url)) {
-      return <div>{ClickToDislike(item)}</div>;
-    } else {
-      return <div>{ClickToLike(item)}</div>;
-    }
-  };
-
-  const additive = (item: UploadedImage) => {
-    return Number(item.likeCount) + 1;
-  };
-
-  const subtractive = (item: UploadedImage) => {
-    return Number(item.likeCount) - 1;
-  };
-
-  const changeLikeStatus = (
-    item: UploadedImage,
-    addOrRem: (item: UploadedImage) => number
-  ) => {
-    const newAddLikeMetadata = {
-      customMetadata: {
-        likeCount: `${addOrRem(item)}`,
-      },
-    };
-
-    const countRef = ref(storage, `projectFiles/${item.storagePathElement}`);
-
-    updateMetadata(countRef, newAddLikeMetadata).then((metadata) => {
-      setLikeNumber(metadata.customMetadata.likeCount);
-    });
   };
 
   return (
@@ -204,7 +109,7 @@ export const MainWithContext = observer(() => {
               />
               <div className="pb-8 text-xl text-slate-950 fixed -right-4 flex flex-col items-center">
                 <span className="p-2 cursor-pointer">
-                  <span className="">{isPhotoURLLiked(item)}</span>
+                  <span className="">{photoStore.isPhotoURLLiked(item)}</span>
                   <span>{item.likeCount}</span>
                 </span>
               </div>
