@@ -46,7 +46,7 @@ export const MainWithContext = observer(() => {
           const alt = metadata?.customMetadata?.imageName ?? "";
           const likeCount = metadata.customMetadata.likeCount;
           const storagePathElement = metadata.customMetadata.storagePathElement;
-          photoStore?.imageData?.push({
+          photoStore?.pushToImageData({
             url,
             alt,
             storagePathElement,
@@ -67,6 +67,8 @@ export const MainWithContext = observer(() => {
     setTempImgURL(imgUrl);
     setIsImgFullScreen(true);
   };
+
+  console.log(photoStore.pictureList);
 
   return (
     <div>

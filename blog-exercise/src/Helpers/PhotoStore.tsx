@@ -35,6 +35,10 @@ export default class PhotoStore {
     this.likedPhotos = likedPhotos;
   };
 
+  pushToImageData = (imgData: UploadedImage) => {
+    this.imageData = [...this.imageData, imgData];
+  };
+
   handleLikeDataCreation = async (url: string) => {
     await setDoc(
       this.likedPhotosRef,
