@@ -5,7 +5,7 @@ import { doc, onSnapshot } from "@firebase/firestore";
 import { auth, db } from "../../firebase";
 import { Loader } from "../../Helpers/Loader";
 import { useDebounce } from "../../Helpers/useDebounce";
-import { LikedPhotos } from "../../Helpers/PhotoRepository";
+import { LikedPhotos, UploadedImage } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { usePhotoStore } from "../../Helpers/PhotoStore";
 import { observer } from "mobx-react";
@@ -42,22 +42,25 @@ export const MainWithContext = observer(() => {
       );
 
       Promise.all(promises).then((results) => {
+        const imageData: UploadedImage[] = [];
+
         results.forEach(([url, metadata]) => {
           const alt = metadata?.customMetadata?.imageName ?? "";
           const likeCount = metadata.customMetadata.likeCount;
           const storagePathElement = metadata.customMetadata.storagePathElement;
-          photoStore?.pushToImageData({
+          imageData.push({
             url,
             alt,
             storagePathElement,
             likeCount,
           });
         });
-        photoStore.setPictureList(photoStore.imageData);
+
+        photoStore.setPictureList(imageData);
         setIsLoading(false);
       });
     });
-  }, [photoStore]);
+  }, [photoStore.likeNumber]);
 
   if (isLoading) {
     return <Loader />;
