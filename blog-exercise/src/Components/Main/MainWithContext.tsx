@@ -9,6 +9,7 @@ import { LikedPhotos, UploadedImage } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { usePhotoStore } from "../../Helpers/PhotoStore";
 import { observer } from "mobx-react";
+import { toJS } from "mobx";
 
 export const MainWithContext = observer(() => {
   const photoStore = usePhotoStore();
@@ -33,7 +34,7 @@ export const MainWithContext = observer(() => {
     });
 
     return () => unsubscribe();
-  }, [photoStore]);
+  }, []);
 
   useEffect(() => {
     listAll(photoStore.pictureListRef).then((response) => {
@@ -60,7 +61,7 @@ export const MainWithContext = observer(() => {
         setIsLoading(false);
       });
     });
-  }, [photoStore.likeNumber]);
+  }, []);
 
   if (isLoading) {
     return <Loader />;
@@ -71,7 +72,16 @@ export const MainWithContext = observer(() => {
     setIsImgFullScreen(true);
   };
 
-  console.log(photoStore.pictureList);
+  const isPhotoURLLiked = (item: UploadedImage) => {
+    if (
+      Array.isArray(photoStore.likedPhotos) &&
+      photoStore.likedPhotos.includes(item.url)
+    ) {
+      return <div>{photoStore.ClickToDislike(item)}</div>;
+    } else {
+      return <div>{photoStore.ClickToLike(item)}</div>;
+    }
+  };
 
   return (
     <div>
@@ -114,7 +124,7 @@ export const MainWithContext = observer(() => {
               />
               <div className="pb-8 text-xl text-slate-950 fixed -right-4 flex flex-col items-center">
                 <span className="p-2 cursor-pointer">
-                  <span className="">{photoStore.isPhotoURLLiked(item)}</span>
+                  <span className="">{isPhotoURLLiked(item)}</span>
                   <span>{item.likeCount}</span>
                 </span>
               </div>

@@ -1,6 +1,6 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, toJS } from "mobx";
 import React, { useContext, useRef, useState } from "react";
-import { LikedPhotos, UploadedImage } from "./PhotoRepository";
+import { UploadedImage } from "./PhotoRepository";
 import { StorageReference, ref, updateMetadata } from "firebase/storage";
 import { storage } from "../firebase";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
@@ -39,20 +39,28 @@ export default class PhotoStore {
     this.imageData = [...this.imageData, imgData];
   };
 
-  handleLikeDataCreation = async (url: string) => {
+  handleLikeDataCreation = async (
+    url: string,
+    addOrRem: (item: UploadedImage) => number
+  ) => {
     await setDoc(
       this.likedPhotosRef,
       { likedPhotos: arrayUnion(url) },
       { merge: true }
     );
+    this.changedLikeCountPictureList(url, addOrRem);
   };
 
-  handleLikeDataRemoval = async (url: string) => {
+  handleLikeDataRemoval = async (
+    url: string,
+    addOrRem: (item: UploadedImage) => number
+  ) => {
     await setDoc(
       this.likedPhotosRef,
       { likedPhotos: arrayRemove(url) },
       { merge: true }
     );
+    this.changedLikeCountPictureList(url, addOrRem);
   };
 
   additive = (item: UploadedImage) => {
@@ -61,6 +69,23 @@ export default class PhotoStore {
 
   subtractive = (item: UploadedImage) => {
     return Number(item.likeCount) - 1;
+  };
+
+  changedLikeCountPictureList = (
+    url: string,
+    addOrRem: (item: UploadedImage) => number
+  ) => {
+    const updatedPictureList = this.pictureList.map((item: UploadedImage) => {
+      if (url === item.url) {
+        return {
+          ...item,
+          likeCount: Number(`${addOrRem(item)}`),
+        };
+      }
+      return item;
+    });
+    this.setPictureList(updatedPictureList);
+    console.log(updatedPictureList);
   };
 
   changeLikeStatus = (
@@ -85,7 +110,8 @@ export default class PhotoStore {
       <BsSuitHeart
         onClick={() => {
           this.changeLikeStatus(item, this.additive);
-          this.handleLikeDataCreation(item.url);
+          this.handleLikeDataCreation(item.url, this.additive);
+          this.setLikedPhotos([...this.likedPhotos, item.url]);
         }}
       />
     );
@@ -96,21 +122,14 @@ export default class PhotoStore {
       <BsSuitHeartFill
         onClick={() => {
           this.changeLikeStatus(item, this.subtractive);
-          this.handleLikeDataRemoval(item.url);
+          this.handleLikeDataRemoval(item.url, this.subtractive);
+          const filteredLikedPhotos = this.likedPhotos.filter(
+            (photoURL) => photoURL !== item.url
+          );
+          this.setLikedPhotos(filteredLikedPhotos);
         }}
       />
     );
-  };
-
-  isPhotoURLLiked = (item: UploadedImage) => {
-    if (
-      Array.isArray(this.likedPhotos) &&
-      this.likedPhotos.includes(item.url)
-    ) {
-      return <div>{this.ClickToDislike(item)}</div>;
-    } else {
-      return <div>{this.ClickToLike(item)}</div>;
-    }
   };
 }
 type PhotoStoreContextValue = PhotoStore;
