@@ -5,7 +5,7 @@ import { StorageReference, ref, updateMetadata } from "firebase/storage";
 import { storage } from "../firebase";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import { doc, setDoc, arrayRemove, arrayUnion } from "@firebase/firestore";
-import { auth, db } from "../firebase";
+import { db } from "../firebase";
 import { GetAuthUserMail } from "./StorageReferences";
 
 export default class PhotoStore {
@@ -15,7 +15,6 @@ export default class PhotoStore {
   pictureListRef: StorageReference = ref(storage, `projectFiles`);
   mailForRef: string = GetAuthUserMail();
   likedPhotosRef = doc(db, "Photos", `${this.mailForRef}`);
-  // likedPhotosRef = doc(db, "Photos", `${auth.currentUser?.email}`);
   likeNumber: number = 0;
   isLoading: boolean = true;
   pictureList: UploadedImage[] = [];
@@ -89,14 +88,12 @@ export default class PhotoStore {
       return item;
     });
     this.setPictureList(updatedPictureList);
-    console.log(updatedPictureList);
   };
 
   changeLikeStatus = (
     item: UploadedImage,
     addOrRem: (item: UploadedImage) => number
   ) => {
-    console.log("mail:", this.mailForRef);
     const newAddLikeMetadata = {
       customMetadata: {
         likeCount: `${addOrRem(item)}`,
