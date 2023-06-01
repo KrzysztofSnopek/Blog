@@ -10,13 +10,18 @@ import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefault
 import { usePhotoStore } from "../../Helpers/PhotoStore";
 import { observer } from "mobx-react";
 import { toJS } from "mobx";
+import { storageLikedPhotosRef } from "../../Helpers/StorageReferences";
+import AuthStore, { AuthStoreContext } from "../Auth/AuthStore";
 
 export const MainWithContext = observer(() => {
   const photoStore = usePhotoStore();
+  const AuthStore = useContext(AuthStoreContext);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
+  // const [likedPhotos, setLikedPhotos] = useState<LikedPhotos>();
+  const currUser = AuthStore.currUser;
 
   const likedPhotosCollectionRef = doc(
     db,
@@ -25,6 +30,7 @@ export const MainWithContext = observer(() => {
   );
 
   useEffect(() => {
+    // console.log("tutaj", toJS(likedPhotosCollectionRef));
     const unsubscribe = onSnapshot(likedPhotosCollectionRef, (doc) => {
       if (doc.data() !== undefined) {
         const newPhotoData = doc.data() as LikedPhotos;
@@ -37,6 +43,7 @@ export const MainWithContext = observer(() => {
   }, []);
 
   useEffect(() => {
+    // console.log("puste?", toJS(photoStore.pictureListRef));
     listAll(photoStore.pictureListRef).then((response) => {
       const promises = response.items.map((item) =>
         Promise.all([getDownloadURL(item), getMetadata(item)])

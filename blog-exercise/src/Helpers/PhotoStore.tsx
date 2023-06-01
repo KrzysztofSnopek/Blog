@@ -1,18 +1,21 @@
 import { makeAutoObservable, toJS } from "mobx";
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useState } from "react";
 import { UploadedImage } from "./PhotoRepository";
 import { StorageReference, ref, updateMetadata } from "firebase/storage";
 import { storage } from "../firebase";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import { doc, setDoc, arrayRemove, arrayUnion } from "@firebase/firestore";
 import { auth, db } from "../firebase";
+import { GetAuthUserMail } from "./StorageReferences";
 
 export default class PhotoStore {
   constructor() {
     makeAutoObservable(this);
   }
   pictureListRef: StorageReference = ref(storage, `projectFiles`);
-  likedPhotosRef = doc(db, "Photos", `${auth.currentUser?.email}`);
+  mailForRef: string = GetAuthUserMail();
+  likedPhotosRef = doc(db, "Photos", `${this.mailForRef}`);
+  // likedPhotosRef = doc(db, "Photos", `${auth.currentUser?.email}`);
   likeNumber: number = 0;
   isLoading: boolean = true;
   pictureList: UploadedImage[] = [];
@@ -55,6 +58,7 @@ export default class PhotoStore {
     url: string,
     addOrRem: (item: UploadedImage) => number
   ) => {
+    console.log("uwaga:", this.likedPhotosRef);
     await setDoc(
       this.likedPhotosRef,
       { likedPhotos: arrayRemove(url) },
@@ -92,6 +96,7 @@ export default class PhotoStore {
     item: UploadedImage,
     addOrRem: (item: UploadedImage) => number
   ) => {
+    console.log("mail:", this.mailForRef);
     const newAddLikeMetadata = {
       customMetadata: {
         likeCount: `${addOrRem(item)}`,
