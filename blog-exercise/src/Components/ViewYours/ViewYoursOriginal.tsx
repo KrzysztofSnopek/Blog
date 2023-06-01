@@ -1,13 +1,50 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { storage } from "../../firebase";
+import { ref, listAll, getDownloadURL, getMetadata } from "firebase/storage";
+import { auth } from "../../firebase";
+import { Loader } from "../../Helpers/Loader";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { UploadedImage } from "../../Helpers/PhotoRepository";
-import { usePhotoStore } from "../../Helpers/PhotoStore";
 
 export function ViewYours() {
-  const photoStore = usePhotoStore();
-
+  const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
+  const [userName, setUserName] = useState<string | "unknown">("unknown");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
+
+  const pictureListRef = ref(storage, `projectFiles`);
+
+  const regex = /\/([^/-]+)_/;
+
+  useEffect(() => {
+    const imageData: UploadedImage[] = [];
+
+    listAll(pictureListRef).then((response) => {
+      const userName = auth.currentUser?.displayName ?? "unknown";
+      setUserName(userName);
+
+      const promises = response.items
+        .filter((item) => item.fullPath.match(regex)?.at(1) === userName)
+        .map((item) => Promise.all([getDownloadURL(item), getMetadata(item)]));
+
+      Promise.all(promises).then((results) => {
+        results.forEach(([url, metadata]) => {
+          const alt = metadata?.customMetadata?.imageName ?? "";
+          const storagePathElement = metadata.customMetadata.storagePathElement;
+          const likeCount = metadata.customMetadata.likeCount;
+          imageData.push({ url, alt, storagePathElement, likeCount });
+        });
+
+        setPictureList(imageData);
+        setIsLoading(false);
+      });
+    });
+  }, []);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   const getYourImg = (imgUrl: string) => {
     setTempImgURL(imgUrl);
@@ -37,7 +74,7 @@ export function ViewYours() {
         </div>
       </div>
       <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
-        {photoStore.pictureList.map((item, index) => {
+        {pictureList.map((item, index) => {
           return (
             <div
               className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl hover:opacity-70 cursor-pointer"

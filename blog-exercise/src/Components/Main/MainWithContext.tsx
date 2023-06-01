@@ -8,7 +8,7 @@ import { LikedPhotos, UploadedImage } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { usePhotoStore } from "../../Helpers/PhotoStore";
 import { observer } from "mobx-react";
-import { toJS } from "mobx";
+import { likedPhotosCollectionRef } from "../../Helpers/StorageReferences";
 
 export const MainWithContext = observer(() => {
   const photoStore = usePhotoStore();
@@ -16,12 +16,6 @@ export const MainWithContext = observer(() => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
-
-  const likedPhotosCollectionRef = doc(
-    db,
-    "Photos",
-    `${auth.currentUser?.email}`
-  );
 
   useEffect(() => {
     const unsubscribe = onSnapshot(likedPhotosCollectionRef, (doc) => {

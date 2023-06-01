@@ -57,7 +57,6 @@ export default class PhotoStore {
     url: string,
     addOrRem: (item: UploadedImage) => number
   ) => {
-    console.log("uwaga:", this.likedPhotosRef);
     await setDoc(
       this.likedPhotosRef,
       { likedPhotos: arrayRemove(url) },
