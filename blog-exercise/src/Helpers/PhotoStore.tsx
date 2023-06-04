@@ -41,6 +41,20 @@ export default class PhotoStore {
     this.imageData = [...this.imageData, imgData];
   };
 
+  debounce = <T extends any[]>(
+    cb: (...args: T) => void,
+    delay = 1000
+  ): ((...args: T) => void) => {
+    let timeout: NodeJS.Timeout;
+
+    return (...args: T) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        cb(...args);
+      }, delay);
+    };
+  };
+
   handleLikeDataCreation = async (
     url: string,
     addOrRem: (item: UploadedImage) => number
@@ -106,7 +120,17 @@ export default class PhotoStore {
     });
   };
 
+  debouncedClickToDislike = this.debounce((item: UploadedImage) => {
+    this.changeLikeStatus(item, this.subtractive);
+    this.handleLikeDataRemoval(item.url, this.subtractive);
+    const filteredLikedPhotos = this.likedPhotos.filter(
+      (photoURL) => photoURL !== item.url
+    );
+    this.setLikedPhotos(filteredLikedPhotos);
+  }, 1000);
+
   ClickToLike = (item: UploadedImage) => {
+    console.log(this.mailForRef);
     return (
       <BsSuitHeart
         onClick={() => {
@@ -119,6 +143,18 @@ export default class PhotoStore {
   };
 
   ClickToDislike = (item: UploadedImage) => {
+    console.log(this.mailForRef);
+    console.log(this.likedPhotosRef);
+    return (
+      <BsSuitHeartFill
+        onClick={() => {
+          this.debouncedClickToDislike(item);
+        }}
+      />
+    );
+  };
+
+  ClickToDislike2 = (item: UploadedImage) => {
     return (
       <BsSuitHeartFill
         onClick={() => {

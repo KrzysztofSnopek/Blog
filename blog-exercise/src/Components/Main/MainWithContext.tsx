@@ -65,7 +65,7 @@ export const MainWithContext = observer(() => {
     setIsImgFullScreen(true);
   };
 
-  const isPhotoURLLiked = (item: UploadedImage) => {
+  const isPhotoURLLiked = (item: UploadedImage): JSX.Element => {
     if (
       Array.isArray(photoStore.likedPhotos) &&
       photoStore.likedPhotos.includes(item.url)
