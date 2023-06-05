@@ -13,7 +13,10 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { useContext } from "react";
-import { AuthStoreContext } from "./Components/Auth/AuthStore";
+import {
+  AuthStoreContext,
+  AuthStoreContextProvider,
+} from "./Components/Auth/AuthStore";
 import { observer } from "mobx-react";
 import { MainWithContext } from "./Components/Main/MainWithContext";
 import { PhotoStoreContextProvider } from "./Helpers/PhotoStore";
@@ -33,7 +36,7 @@ export const App = observer((): JSX.Element => {
     )
   );
 
-  if (!AuthStore.isAuth) {
+  if (!AuthStore?.isAuth) {
     return (
       <div>
         <Auth />

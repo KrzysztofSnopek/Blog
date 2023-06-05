@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { listAll, getDownloadURL, getMetadata } from "firebase/storage";
 import { doc, onSnapshot } from "@firebase/firestore";
-import { auth, db } from "../../firebase";
 import { Loader } from "../../Helpers/Loader";
-import { useDebounce } from "../../Helpers/useDebounce";
 import { LikedPhotos, UploadedImage } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { usePhotoStore } from "../../Helpers/PhotoStore";

@@ -6,14 +6,15 @@ import { storage } from "../firebase";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import { doc, setDoc, arrayRemove, arrayUnion } from "@firebase/firestore";
 import { db } from "../firebase";
-import { GetAuthUserMail } from "./StorageReferences";
+// import { useAuthUserMail } from "./useAuthUserMail";
 
 export default class PhotoStore {
   constructor() {
     makeAutoObservable(this);
   }
   pictureListRef: StorageReference = ref(storage, `projectFiles`);
-  mailForRef: string = GetAuthUserMail();
+  mailForRef: string = "a";
+  // mailForRef: string = useAuthUserMail();
   likedPhotosRef = doc(db, "Photos", `${this.mailForRef}`);
   likeNumber: number = 0;
   isLoading: boolean = true;
@@ -39,20 +40,6 @@ export default class PhotoStore {
 
   pushToImageData = (imgData: UploadedImage) => {
     this.imageData = [...this.imageData, imgData];
-  };
-
-  debounce = <T extends any[]>(
-    cb: (...args: T) => void,
-    delay = 1000
-  ): ((...args: T) => void) => {
-    let timeout: NodeJS.Timeout;
-
-    return (...args: T) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        cb(...args);
-      }, delay);
-    };
   };
 
   handleLikeDataCreation = async (
@@ -120,6 +107,20 @@ export default class PhotoStore {
     });
   };
 
+  debounce = <T extends any[]>(
+    cb: (...args: T) => void,
+    delay = 1000
+  ): ((...args: T) => void) => {
+    let timeout: NodeJS.Timeout;
+
+    return (...args: T) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        cb(...args);
+      }, delay);
+    };
+  };
+
   debouncedClickToDislike = this.debounce((item: UploadedImage) => {
     this.changeLikeStatus(item, this.subtractive);
     this.handleLikeDataRemoval(item.url, this.subtractive);
@@ -128,6 +129,8 @@ export default class PhotoStore {
     );
     this.setLikedPhotos(filteredLikedPhotos);
   }, 1000);
+
+  debouncedClicktoLike = this.debounce((item: UploadedImage) => {});
 
   ClickToLike = (item: UploadedImage) => {
     console.log(this.mailForRef);
