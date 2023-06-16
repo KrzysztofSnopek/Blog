@@ -1,6 +1,5 @@
 import { useState } from "react";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
-import { UploadedImage } from "../../Helpers/PhotoRepository";
 import { usePhotoStore } from "../../Helpers/PhotoStore";
 
 export function ViewYours() {

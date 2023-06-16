@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { listAll, getDownloadURL, getMetadata } from "firebase/storage";
-import { doc, onSnapshot } from "@firebase/firestore";
+import { onSnapshot } from "@firebase/firestore";
 import { Loader } from "../../Helpers/Loader";
 import { LikedPhotos, UploadedImage } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
@@ -25,7 +25,7 @@ export const MainWithContext = observer(() => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [photoStore]);
 
   useEffect(() => {
     listAll(photoStore.pictureListRef).then((response) => {
@@ -52,7 +52,7 @@ export const MainWithContext = observer(() => {
         setIsLoading(false);
       });
     });
-  }, []);
+  }, [photoStore]);
 
   if (isLoading) {
     return <Loader />;

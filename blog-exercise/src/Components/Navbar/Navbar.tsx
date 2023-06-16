@@ -1,9 +1,8 @@
-import { useContext } from "react";
 import { Link } from "react-router-dom";
-import { AuthStoreContext } from "../Auth/AuthStore";
+import { useAuthStore } from "../Auth/AuthStore";
 
 export function Navbar() {
-  const AuthStore = useContext(AuthStoreContext);
+  const AuthStore = useAuthStore();
 
   return (
     <div className="bg-orange-400 p-6 text-lg text-slate-700 font-bold flex justify-between h-20">

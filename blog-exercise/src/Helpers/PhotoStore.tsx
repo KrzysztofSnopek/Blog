@@ -1,4 +1,4 @@
-import { makeAutoObservable, toJS } from "mobx";
+import { makeAutoObservable } from "mobx";
 import React, { useContext, useState } from "react";
 import { UploadedImage } from "./PhotoRepository";
 import { StorageReference, ref, updateMetadata } from "firebase/storage";
@@ -6,15 +6,14 @@ import { storage } from "../firebase";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import { doc, setDoc, arrayRemove, arrayUnion } from "@firebase/firestore";
 import { db } from "../firebase";
-// import { useAuthUserMail } from "./useAuthUserMail";
+import { useAuthUserMail } from "./useAuthUserMail";
 
 export default class PhotoStore {
   constructor() {
     makeAutoObservable(this);
   }
   pictureListRef: StorageReference = ref(storage, `projectFiles`);
-  mailForRef: string = "a";
-  // mailForRef: string = useAuthUserMail();
+  mailForRef: string = useAuthUserMail();
   likedPhotosRef = doc(db, "Photos", `${this.mailForRef}`);
   likeNumber: number = 0;
   isLoading: boolean = true;

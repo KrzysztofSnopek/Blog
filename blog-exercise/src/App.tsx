@@ -3,7 +3,6 @@ import { Main } from "./Components/Main/Main";
 import { Leaderboards } from "./Components/Leaderboards/Leaderboards";
 import { AddPicture } from "./Components/AddPicture/AddPicture";
 import { ViewYours } from "./Components/ViewYours/ViewYours";
-import { Authentication } from "./Components/Auth/Authentication";
 import { Auth } from "./Components/Auth/Auth";
 import {
   createBrowserRouter,
@@ -12,17 +11,14 @@ import {
   Outlet,
   RouterProvider,
 } from "react-router-dom";
-import { useContext } from "react";
-import {
-  AuthStoreContext,
-  AuthStoreContextProvider,
-} from "./Components/Auth/AuthStore";
+import { useAuthStore } from "./Components/Auth/AuthStore";
 import { observer } from "mobx-react";
 import { MainWithContext } from "./Components/Main/MainWithContext";
 import { PhotoStoreContextProvider } from "./Helpers/PhotoStore";
+import { AuthStoreContextProvider } from "./Components/Auth/AuthStore";
 
 export const App = observer((): JSX.Element => {
-  const AuthStore = useContext(AuthStoreContext);
+  const AuthStore = useAuthStore();
 
   const router = createBrowserRouter(
     createRoutesFromElements(

@@ -1,6 +1,6 @@
 import { User, signInWithPopup, signOut } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useState } from "react";
 import Cookies from "universal-cookie";
 import { auth, provider } from "../../firebase";
 

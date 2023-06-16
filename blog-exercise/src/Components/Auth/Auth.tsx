@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { AuthStoreContext } from "./AuthStore";
+import { AuthStoreContext, useAuthStore } from "./AuthStore";
 
 export const Auth = () => {
-  const AuthStore = useContext(AuthStoreContext);
+  const AuthStore = useAuthStore();
 
   return (
     <div className="bg-pattern-main h-screen bg-cover bg-blend-multiply bg-slate-500">
