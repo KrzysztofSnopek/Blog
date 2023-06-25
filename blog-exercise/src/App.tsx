@@ -15,7 +15,6 @@ import { useAuthStore } from "./Components/Auth/AuthStore";
 import { observer } from "mobx-react";
 import { MainWithContext } from "./Components/Main/MainWithContext";
 import { PhotoStoreContextProvider } from "./Helpers/PhotoStore";
-import { AuthStoreContextProvider } from "./Components/Auth/AuthStore";
 
 export const App = observer((): JSX.Element => {
   const AuthStore = useAuthStore();

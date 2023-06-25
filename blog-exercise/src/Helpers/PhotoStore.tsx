@@ -129,24 +129,23 @@ export default class PhotoStore {
     this.setLikedPhotos(filteredLikedPhotos);
   }, 1000);
 
-  debouncedClicktoLike = this.debounce((item: UploadedImage) => {});
+  debouncedClicktoLike = this.debounce((item: UploadedImage) => {
+    this.changeLikeStatus(item, this.additive);
+    this.handleLikeDataCreation(item.url, this.additive);
+    this.setLikedPhotos([...this.likedPhotos, item.url]);
+  });
 
   ClickToLike = (item: UploadedImage) => {
-    console.log(this.mailForRef);
     return (
       <BsSuitHeart
         onClick={() => {
-          this.changeLikeStatus(item, this.additive);
-          this.handleLikeDataCreation(item.url, this.additive);
-          this.setLikedPhotos([...this.likedPhotos, item.url]);
+          this.debouncedClicktoLike(item);
         }}
       />
     );
   };
 
   ClickToDislike = (item: UploadedImage) => {
-    console.log(this.mailForRef);
-    console.log(this.likedPhotosRef);
     return (
       <BsSuitHeartFill
         onClick={() => {
