@@ -12,7 +12,6 @@ export default class PhotoStore {
   constructor() {
     makeAutoObservable(this);
   }
-  pictureListRef: StorageReference = ref(storage, `projectFiles`);
   mailForRef: string = useAuthUserMail();
   likedPhotosRef = doc(db, "Photos", `${this.mailForRef}`);
   likeNumber: number = 0;

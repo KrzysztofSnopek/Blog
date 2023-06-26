@@ -6,7 +6,10 @@ import { LikedPhotos, UploadedImage } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { usePhotoStore } from "../../Helpers/PhotoStore";
 import { observer } from "mobx-react";
-import { likedPhotosCollectionRef } from "../../Helpers/StorageReferences";
+import {
+  likedPhotosCollectionRef,
+  pictureListRef,
+} from "../../Helpers/StorageReferences";
 
 export const MainWithContext = observer(() => {
   const photoStore = usePhotoStore();
@@ -28,7 +31,7 @@ export const MainWithContext = observer(() => {
   }, [photoStore]);
 
   useEffect(() => {
-    listAll(photoStore.pictureListRef).then((response) => {
+    listAll(pictureListRef).then((response) => {
       const promises = response.items.map((item) =>
         Promise.all([getDownloadURL(item), getMetadata(item)])
       );

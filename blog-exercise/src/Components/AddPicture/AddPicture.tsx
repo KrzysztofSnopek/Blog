@@ -5,6 +5,7 @@ import { auth } from "../../firebase";
 import { serverTimestamp } from "@firebase/firestore";
 import { observer } from "mobx-react";
 import { v4 } from "uuid";
+import { convertFile } from "../../Helpers/utils";
 
 export const AddPicture = observer(() => {
   const [filebase64, setFileBase64] = useState<string>("");
@@ -44,19 +45,6 @@ export const AddPicture = observer(() => {
     setPicturePreview(undefined);
   };
 
-  const convertFile = (files: FileList | null): void => {
-    if (files) {
-      const fileRef = files[0] || "";
-      const fileType: string = fileRef.type || "";
-      const reader = new FileReader();
-      reader.readAsBinaryString(fileRef);
-      reader.onload = (e: any) => {
-        // convert it to base64
-        setFileBase64(`${btoa(e.target.result)}`);
-      };
-    }
-  };
-
   return (
     <div className="w-9/12 m-auto">
       <div className="h-auto flex items-center flex-col">
@@ -72,7 +60,9 @@ export const AddPicture = observer(() => {
             className="p-4"
             onChange={(e) => {
               handlePictureChange(e);
-              convertFile(e.target.files);
+              // convert it to base64
+              console.log(e.target.files);
+              setFileBase64(convertFile(e.target.files, "btoa"));
             }}
           />
           <input
