@@ -1,16 +1,15 @@
-export const convertFile = (
-  files: FileList | null,
-  stringCodingPrefix: string
-): string => {
+export const convertFile = (files: FileList | null): string => {
   let starter = "";
   if (!files) {
     return "";
   }
   const fileRef = files[0] || "";
+  console.log("ref: ", fileRef);
   const reader = new FileReader();
   reader.readAsBinaryString(fileRef);
   reader.onload = (e: any) => {
-    starter = `${stringCodingPrefix}${e.target.result}`;
+    starter = `${btoa(e.target.result)}`;
+    console.log(starter);
   };
   return starter;
 };

@@ -35,6 +35,7 @@ export const AddPicture = observer(() => {
       alert("uploaded to the storage");
     });
   };
+
   const handlePictureChange = (e: any) => {
     if (e.target.files && e.target.files.length > 0) {
       setPicturePreview(e.target.files[0]);
@@ -61,8 +62,7 @@ export const AddPicture = observer(() => {
             onChange={(e) => {
               handlePictureChange(e);
               // convert it to base64
-              console.log(e.target.files);
-              setFileBase64(convertFile(e.target.files, "btoa"));
+              setFileBase64(convertFile(e.target.files));
             }}
           />
           <input

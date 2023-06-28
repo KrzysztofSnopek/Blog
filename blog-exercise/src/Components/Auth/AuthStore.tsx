@@ -26,7 +26,6 @@ export default class AuthStore {
         sameSite: "lax",
       });
       this.currUser = auth.currentUser;
-      console.log("user z autha:", this.currUser);
       this.setIsAuth(true);
     } catch (error) {
       console.log(error);
@@ -39,22 +38,6 @@ export default class AuthStore {
     this.setIsAuth(false);
   };
 }
-
-// export const AuthStoreContext = React.createContext<Partial<AuthStore>>({});
-
-// type AuthProviderProps = {
-//   children: React.ReactNode;
-// };
-
-// export function AuthStoreProvider({ children }: AuthProviderProps) {
-//   const store = useRef(new AuthStore());
-
-//   return (
-//     <AuthStoreContext.Provider value={store.current}>
-//       {children}
-//     </AuthStoreContext.Provider>
-//   );
-// }
 
 type AuthStoreContextValue = AuthStore;
 export const AuthStoreContext =
