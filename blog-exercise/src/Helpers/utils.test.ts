@@ -15,7 +15,7 @@ class MockFileReader {
 import { convertFile, addAndDivide } from "./utils";
 
 describe("convertFile", () => {
-  test("creates base64 encoded file string", () => {
+  test("creates base64 encoded file string", async () => {
     (window as any).FileReader = MockFileReader;
     const file = {
       0: {
@@ -30,7 +30,10 @@ describe("convertFile", () => {
       length: 1,
     } as any;
 
-    expect(convertFile(file)).toBe({});
+    const result = await convertFile(file);
+
+    // Add your assertions here based on the expected result
+    expect(result).toBe("TW9jayBiaW5hcnkgc3RyaW5n");
   });
 });
 
