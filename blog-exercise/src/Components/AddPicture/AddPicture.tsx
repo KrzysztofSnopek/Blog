@@ -39,6 +39,10 @@ export const AddPicture = observer(() => {
   const handlePictureChange = (e: any) => {
     if (e.target.files && e.target.files.length > 0) {
       setPicturePreview(e.target.files[0]);
+      // convert it to base64
+      convertFile(e.target.files)
+        .then((base64String) => setFileBase64(base64String))
+        .catch((e) => console.error(e));
     }
   };
 
@@ -61,8 +65,6 @@ export const AddPicture = observer(() => {
             className="p-4"
             onChange={(e) => {
               handlePictureChange(e);
-              // convert it to base64
-              setFileBase64(convertFile(e.target.files));
             }}
           />
           <input
