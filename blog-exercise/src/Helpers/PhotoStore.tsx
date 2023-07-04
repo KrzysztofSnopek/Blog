@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import React, { useContext, useState } from "react";
 import { UploadedImage } from "./PhotoRepository";
-import { StorageReference, ref, updateMetadata } from "firebase/storage";
+import { ref, updateMetadata } from "firebase/storage";
 import { storage } from "../firebase";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import { doc, setDoc, arrayRemove, arrayUnion } from "@firebase/firestore";
@@ -19,6 +19,8 @@ export default class PhotoStore {
   pictureList: UploadedImage[] = [];
   imageData: UploadedImage[] = [];
   likedPhotos: string[] = [];
+  isImgFullScreen: boolean = false;
+  tempImgURL: string = "";
 
   setPictureList = (pictureList: UploadedImage[]) => {
     this.pictureList = pictureList;
@@ -34,6 +36,14 @@ export default class PhotoStore {
 
   setLikedPhotos = (likedPhotos: string[]) => {
     this.likedPhotos = likedPhotos;
+  };
+
+  setIsImgFullScreen = (isImgFullScreen: boolean) => {
+    this.isImgFullScreen = isImgFullScreen;
+  };
+
+  setTempImgURL = (tempImgURL: string) => {
+    this.tempImgURL = tempImgURL;
   };
 
   pushToImageData = (imgData: UploadedImage) => {
