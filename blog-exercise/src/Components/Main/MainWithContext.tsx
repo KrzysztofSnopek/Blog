@@ -10,6 +10,7 @@ import {
   likedPhotosCollectionRef,
   pictureListRef,
 } from "../../Helpers/StorageReferences";
+import Masonry from "@mui/lab/Masonry";
 
 export const MainWithContext = observer(() => {
   const photoStore = usePhotoStore();
@@ -103,28 +104,30 @@ export const MainWithContext = observer(() => {
       </div>
 
       <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
-        {photoStore.pictureList?.map((item, index) => {
-          return (
-            <div
-              className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl "
-              key={`${index}-${item.url}`}
-            >
-              <div className="px-6 pt-6 text-center">{item.alt}</div>
-              <img
-                className="object-contain max-h-full max-w-full p-6 hover:opacity-70 cursor-pointer"
-                src={item.url}
-                alt={item.alt}
-                onClick={() => getImg(item.url)}
-              />
-              <div className="pb-8 text-xl text-slate-950 fixed -right-4 flex flex-col items-center">
-                <span className="p-2 cursor-pointer">
-                  <span className="">{isPhotoURLLiked(item)}</span>
-                  <span>{item.likeCount}</span>
-                </span>
+        <Masonry columns={4} spacing={1}>
+          {photoStore.pictureList?.map((item, index) => {
+            return (
+              <div
+                className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl "
+                key={`${index}-${item.url}`}
+              >
+                <div className="px-6 pt-6 text-center">{item.alt}</div>
+                <img
+                  className="object-contain max-h-full max-w-full p-6 hover:opacity-70 cursor-pointer"
+                  src={item.url}
+                  alt={item.alt}
+                  onClick={() => getImg(item.url)}
+                />
+                <div className="pb-8 text-xl text-slate-950 fixed -right-4 flex flex-col items-center">
+                  <span className="p-2 cursor-pointer">
+                    <span className="">{isPhotoURLLiked(item)}</span>
+                    <span>{item.likeCount}</span>
+                  </span>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </Masonry>
       </div>
     </div>
   );
