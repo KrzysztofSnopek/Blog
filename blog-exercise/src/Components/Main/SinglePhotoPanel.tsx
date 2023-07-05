@@ -14,7 +14,7 @@ export const SinglePhotoPanel = (props: ImageProps) => {
 
   const showButton = (e: any) => {
     e.preventDefault();
-    setDisplay("block");
+    setDisplay("flex");
   };
 
   const hideButton = (e: any) => {
@@ -40,25 +40,30 @@ export const SinglePhotoPanel = (props: ImageProps) => {
 
   return (
     <div
-      className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl "
+      className="p-4 relative bg-blue-100"
       key={`${props.index}-${props.item.url}`}
       onMouseEnter={(e) => showButton(e)}
       onMouseLeave={(e) => hideButton(e)}
     >
-      <div className={display}>{props.item.alt}</div>
+      <div
+        className={`${display} absolute inset-0 items-center justify-center z-10 font-bold text-xl`}
+      >
+        {props.item.alt}
+        <div className="pb-8 text-xl text-slate-950 flex flex-col items-center">
+          <span className="p-2 cursor-pointer">
+            <span>{isPhotoURLLiked(props.item)}</span>
+            <span className="font-bold">{props.item.likeCount}</span>
+          </span>
+        </div>
+      </div>
+
       <img
-        className="object-contain max-h-full max-w-full p-6 hover:opacity-70 cursor-pointer"
+        className="w-full h-auto hover:opacity-75"
         src={props.item.url}
         alt={props.item.alt}
         // loading="lazy"
         onClick={() => getImg(props.item.url)}
       />
-      <div className="pb-8 text-xl text-slate-950 fixed -right-4 flex flex-col items-center">
-        <span className="p-2 cursor-pointer">
-          <span className="">{isPhotoURLLiked(props.item)}</span>
-          <span>{props.item.likeCount}</span>
-        </span>
-      </div>
     </div>
   );
 };

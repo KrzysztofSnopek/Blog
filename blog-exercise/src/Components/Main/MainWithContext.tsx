@@ -86,8 +86,8 @@ export const MainWithContext = observer(() => {
         </div>
       </div>
 
-      <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
-        <Masonry columns={3} spacing={1}>
+      <div className="flex flex-wrap bg-slate-400 justify-center gap-6">
+        <Masonry columns={4} spacing={1}>
           {photoStore.pictureList?.map((item, index) => {
             return (
               <SinglePhotoPanel index={index} item={item} key={item.url} />
