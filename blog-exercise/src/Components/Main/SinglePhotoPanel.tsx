@@ -14,7 +14,7 @@ export const SinglePhotoPanel = (props: ImageProps) => {
 
   const showButton = (e: any) => {
     e.preventDefault();
-    setDisplay("flex");
+    setDisplay("absolute");
   };
 
   const hideButton = (e: any) => {
@@ -40,30 +40,35 @@ export const SinglePhotoPanel = (props: ImageProps) => {
 
   return (
     <div
-      className="p-4 relative bg-blue-100"
+      className="m-4 bg-blue-100"
       key={`${props.index}-${props.item.url}`}
       onMouseEnter={(e) => showButton(e)}
       onMouseLeave={(e) => hideButton(e)}
     >
-      <div
-        className={`${display} absolute inset-0 items-center justify-center z-10 font-bold text-xl`}
-      >
-        {props.item.alt}
-        <div className="pb-8 text-xl text-slate-950 flex flex-col items-center">
-          <span className="p-2 cursor-pointer">
-            <span>{isPhotoURLLiked(props.item)}</span>
-            <span className="font-bold">{props.item.likeCount}</span>
-          </span>
-        </div>
-      </div>
+      <div className="relative hover:shadow-inner">
+        <div
+          className={`${display} flex-col content-between inset-0 font-bold text-xl h-full`}
+        >
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xl text-slate-950">
+            <span className="p-2 cursor-pointer flex">
+              <span className="font-bold">{props.item.likeCount}</span>
+              <span>{isPhotoURLLiked(props.item)}</span>
+            </span>
+          </div>
 
-      <img
-        className="w-full h-auto hover:opacity-75"
-        src={props.item.url}
-        alt={props.item.alt}
-        // loading="lazy"
-        onClick={() => getImg(props.item.url)}
-      />
+          <div className="absolute bottom-1 left-2">{props.item.alt}</div>
+
+          <div className="absolute bottom-1 right-2">click to max</div>
+        </div>
+
+        <img
+          className="w-full h-auto hover:opacity-75"
+          src={props.item.url}
+          alt={props.item.alt}
+          // loading="lazy"
+          onClick={() => getImg(props.item.url)}
+        />
+      </div>
     </div>
   );
 };

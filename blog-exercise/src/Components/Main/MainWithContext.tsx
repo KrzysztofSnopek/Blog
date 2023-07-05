@@ -86,11 +86,13 @@ export const MainWithContext = observer(() => {
         </div>
       </div>
 
-      <div className="flex flex-wrap bg-slate-400 justify-center gap-6">
-        <Masonry columns={4} spacing={1}>
+      <div className="flex flex-wrap bg-blue-50 justify-center">
+        <Masonry columns={4} spacing={2}>
           {photoStore.pictureList?.map((item, index) => {
             return (
-              <SinglePhotoPanel index={index} item={item} key={item.url} />
+              <div key={item.url} className="p-1 bg-blue-200">
+                <SinglePhotoPanel index={index} item={item} />
+              </div>
             );
           })}
         </Masonry>
