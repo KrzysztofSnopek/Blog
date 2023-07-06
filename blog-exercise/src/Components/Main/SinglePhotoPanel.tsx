@@ -45,9 +45,17 @@ export const SinglePhotoPanel = (props: ImageProps) => {
       onMouseEnter={(e) => showButton(e)}
       onMouseLeave={(e) => hideButton(e)}
     >
-      <div className="relative hover:shadow-inner">
+      <div className="relative">
+        <img
+          className="w-full h-auto min-h-1/5 hover:opacity-75 "
+          src={props.item.url}
+          alt={props.item.alt}
+          // loading="lazy"
+          onClick={() => getImg(props.item.url)}
+        />
+
         <div
-          className={`${display} flex-col content-between inset-0 font-bold text-xl h-full`}
+          className={`${display} flex-col content-between inset-0 font-bold text-xl h-full shadow-inner-top-bottom`}
         >
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xl text-slate-950">
             <span className="p-2 cursor-pointer flex">
@@ -60,14 +68,6 @@ export const SinglePhotoPanel = (props: ImageProps) => {
 
           <div className="absolute bottom-1 right-2">click to max</div>
         </div>
-
-        <img
-          className="w-full h-auto hover:opacity-75"
-          src={props.item.url}
-          alt={props.item.alt}
-          // loading="lazy"
-          onClick={() => getImg(props.item.url)}
-        />
       </div>
     </div>
   );
