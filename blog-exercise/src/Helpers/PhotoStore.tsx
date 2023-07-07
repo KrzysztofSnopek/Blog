@@ -3,7 +3,8 @@ import React, { useContext, useState } from "react";
 import { UploadedImage } from "./PhotoRepository";
 import { ref, updateMetadata } from "firebase/storage";
 import { storage } from "../firebase";
-import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { doc, setDoc, arrayRemove, arrayUnion } from "@firebase/firestore";
 import { db } from "../firebase";
 import { useAuthUserMail } from "./useAuthUserMail";
@@ -146,7 +147,8 @@ export default class PhotoStore {
 
   ClickToLike = (item: UploadedImage) => {
     return (
-      <BsSuitHeart
+      <FavoriteBorderIcon
+        fontSize="large"
         onClick={() => {
           this.debouncedClicktoLike(item);
         }}
@@ -156,7 +158,8 @@ export default class PhotoStore {
 
   ClickToDislike = (item: UploadedImage) => {
     return (
-      <BsSuitHeartFill
+      <FavoriteIcon
+        fontSize="large"
         onClick={() => {
           this.debouncedClickToDislike(item);
         }}
@@ -166,7 +169,8 @@ export default class PhotoStore {
 
   ClickToDislike2 = (item: UploadedImage) => {
     return (
-      <BsSuitHeartFill
+      <FavoriteIcon
+        fontSize="large"
         onClick={() => {
           this.changeLikeStatus(item, this.subtractive);
           this.handleLikeDataRemoval(item.url, this.subtractive);
