@@ -68,7 +68,7 @@ export const SinglePhotoPanel = (props: ImageProps) => {
 
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xl text-slate-950 min-w-min">
             <span className="p-2 cursor-pointer flex">
-              <span className="text-red-500 backdrop-blur">
+              <span className="text-red-600 backdrop-blur-sm backdrop-opacity-60">
                 {isPhotoURLLiked(props.item)}
               </span>
             </span>
@@ -78,8 +78,8 @@ export const SinglePhotoPanel = (props: ImageProps) => {
             {props.item.alt}
           </div>
 
-          <div className="absolute bottom-1 right-2 text-blue-100">
-            click to max
+          <div className="absolute bottom-1 right-2 text-blue-100 hover:cursor-pointer">
+            <ZoomOutMapIcon onClick={() => getImg(props.item.url)} />
           </div>
         </div>
       </div>
