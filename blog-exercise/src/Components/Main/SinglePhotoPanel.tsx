@@ -68,7 +68,7 @@ export const SinglePhotoPanel = (props: ImageProps) => {
 
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xl text-slate-950 min-w-min">
             <span className="p-2 cursor-pointer flex">
-              <span className="text-red-500">
+              <span className="text-red-500 backdrop-blur">
                 {isPhotoURLLiked(props.item)}
               </span>
             </span>
