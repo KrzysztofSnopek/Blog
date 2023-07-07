@@ -63,7 +63,7 @@ export const MainWithContext = observer(() => {
   }
 
   return (
-    <div>
+    <div className="flex justify-center bg-blue-50">
       <div
         className={
           photoStore.isImgFullScreen
@@ -87,7 +87,7 @@ export const MainWithContext = observer(() => {
         </div>
       </div>
 
-      <div className="flex flex-wrap bg-blue-50 justify-center">
+      <div className="flex flex-wrap bg-blue-50 justify-center w-11/12">
         <Masonry columns={4} spacing={2}>
           {photoStore.pictureList?.map((item, index) => {
             return (
