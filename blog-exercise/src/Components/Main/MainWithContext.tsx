@@ -3,7 +3,6 @@ import { listAll, getDownloadURL, getMetadata } from "firebase/storage";
 import { onSnapshot } from "@firebase/firestore";
 import { Loader } from "../../Helpers/Loader";
 import { LikedPhotos, UploadedImage } from "../../Helpers/PhotoRepository";
-import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { usePhotoStore } from "../../Helpers/PhotoStore";
 import { observer } from "mobx-react";
 import {
@@ -69,7 +68,7 @@ export const MainWithContext = observer(() => {
         <Slider />
       </div>
 
-      <div>
+      <div className="flex justify-center">
         <div
           className={
             photoStore.isImgFullScreen
@@ -97,7 +96,7 @@ export const MainWithContext = observer(() => {
           <Masonry columns={4} spacing={2}>
             {photoStore.pictureList?.map((item, index) => {
               return (
-                <div key={item.url} className="p-1 bg-blue-200">
+                <div key={item.url} className=" bg-blue-100">
                   <SinglePhotoPanel index={index} item={item} />
                 </div>
               );
