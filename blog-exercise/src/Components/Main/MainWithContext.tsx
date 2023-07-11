@@ -64,44 +64,46 @@ export const MainWithContext = observer(() => {
   }
 
   return (
-    <div className="flex justify-center bg-blue-50">
-      <div
-        className={
-          photoStore.isImgFullScreen
-            ? "w-full min-h-screen fixed top-0 left-0 flex justify-center items-center bg-slate-900 bg-opacity-50 backdrop-blur-2xl shadow-xl z-10"
-            : "hidden"
-        }
-      >
-        <div className="h-5/6 relative">
-          <img
-            src={photoStore.tempImgURL}
-            className="cursor-pointer max-h-screen"
-            alt=""
-            onClick={() => photoStore.setIsImgFullScreen(false)}
-          />
-          <div
-            className="cursor-pointer text-blue-100 hover:text-blue-200 absolute top-2 right-2"
-            onClick={() => photoStore.setIsImgFullScreen(false)}
-          >
-            <ZoomInMapIcon fontSize="large" color="inherit" />
-          </div>
-        </div>
-      </div>
-
+    <div className="flex justify-center bg-blue-50 flex-col">
       <div>
         <Slider />
       </div>
 
-      <div className="flex flex-wrap bg-blue-50 justify-center w-11/12">
-        <Masonry columns={4} spacing={2}>
-          {photoStore.pictureList?.map((item, index) => {
-            return (
-              <div key={item.url} className="p-1 bg-blue-200">
-                <SinglePhotoPanel index={index} item={item} />
-              </div>
-            );
-          })}
-        </Masonry>
+      <div>
+        <div
+          className={
+            photoStore.isImgFullScreen
+              ? "w-full min-h-screen fixed top-0 left-0 flex justify-center items-center bg-slate-900 bg-opacity-50 backdrop-blur-2xl shadow-xl z-10"
+              : "hidden"
+          }
+        >
+          <div className="h-5/6 relative">
+            <img
+              src={photoStore.tempImgURL}
+              className="cursor-pointer max-h-screen"
+              alt=""
+              onClick={() => photoStore.setIsImgFullScreen(false)}
+            />
+            <div
+              className="cursor-pointer text-blue-100 hover:text-blue-200 absolute top-2 right-2"
+              onClick={() => photoStore.setIsImgFullScreen(false)}
+            >
+              <ZoomInMapIcon fontSize="large" color="inherit" />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap bg-blue-50 justify-center w-11/12">
+          <Masonry columns={4} spacing={2}>
+            {photoStore.pictureList?.map((item, index) => {
+              return (
+                <div key={item.url} className="p-1 bg-blue-200">
+                  <SinglePhotoPanel index={index} item={item} />
+                </div>
+              );
+            })}
+          </Masonry>
+        </div>
       </div>
     </div>
   );
