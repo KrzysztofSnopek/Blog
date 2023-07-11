@@ -15,6 +15,19 @@ module.exports = {
       minHeight: {
         "1/5": "100px",
       },
+      animation: {
+        scrollToLeft: "scroll 90s linear infinite",
+      },
+      keyframes: {
+        scroll: {
+          "0%": {
+            transform: "translateX(0)",
+          },
+          "100%": {
+            transform: "translateX(calc(-384px * 10))",
+          },
+        },
+      },
     },
   },
   plugins: [],

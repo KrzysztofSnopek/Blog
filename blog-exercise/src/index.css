@@ -5,3 +5,9 @@
 @import "tailwindcss/utilities";
 
 @config '../tailwind.config.js';
+
+@layer utilities {
+  .pause {
+    animation-play-state: paused;
+  }
+}
