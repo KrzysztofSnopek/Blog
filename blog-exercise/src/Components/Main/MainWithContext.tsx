@@ -13,6 +13,7 @@ import {
 import Masonry from "@mui/lab/Masonry";
 import { SinglePhotoPanel } from "./SinglePhotoPanel";
 import ZoomInMapIcon from "@mui/icons-material/ZoomInMap";
+import { Slider } from "./Slider";
 
 export const MainWithContext = observer(() => {
   const photoStore = usePhotoStore();
@@ -85,6 +86,10 @@ export const MainWithContext = observer(() => {
             <ZoomInMapIcon fontSize="large" color="inherit" />
           </div>
         </div>
+      </div>
+
+      <div>
+        <Slider />
       </div>
 
       <div className="flex flex-wrap bg-blue-50 justify-center w-11/12">
