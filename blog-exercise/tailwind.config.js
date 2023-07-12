@@ -12,6 +12,9 @@ module.exports = {
         heart:
           "0 10% 10% 10% rgba(200, 0, 0, 0.5), inset 0 -35px 35px -25px rgba(200, 0, 0, 0.5)",
       },
+      dropShadow: {
+        "4xl": "0 20px 15px rgba(30, 64, 175, 0.8)",
+      },
       minHeight: {
         "1/5": "100px",
       },

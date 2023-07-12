@@ -64,6 +64,16 @@ export const Main = observer(() => {
 
   return (
     <div className="flex justify-center bg-blue-50 flex-col">
+      <div className="flex justify-center h-[15vh] items-center">
+        <h1 className="font-body text-5xl italic drop-shadow-4xl text-blue-800 grid grid-cols-3 grid-rows-2">
+          <p>Show</p>
+          <p className="col-start-1">Your</p>
+          <p className=" text-8xl row-span-2 row-start-1 col-start-2 col-span-3">
+            Picture
+          </p>
+        </h1>
+      </div>
+
       <div>
         <Slider />
       </div>
