@@ -5,13 +5,18 @@ export function Navbar() {
   const AuthStore = useAuthStore();
 
   return (
-    <div className="bg-orange-400 p-6 text-lg text-slate-700 font-bold flex justify-between h-20">
-      <Link to="/">Main</Link>
-      <Link to="/leaderboards">Leaderboards</Link>
-      <Link to="/addpicture">Add picture</Link>
-      <Link to="/viewyours">View your pictures</Link>
-      <Link to="/signout">Sign In</Link>
-      <button onClick={AuthStore.signUserOut}>Log out</button>
+    <div className="bg-blue-50 p-6 text-lg text-slate-700 font-bold flex justify-between h-20">
+      <div>
+        <Link to="/">GALLERY</Link>
+        <Link to="/leaderboards">LEADERBOARDS</Link>
+      </div>
+      <div>
+        <Link to="/addpicture">ADD PICTURE</Link>
+      </div>
+      <div>
+        <Link to="/viewyours">VIEW YOURS</Link>
+        <button onClick={AuthStore.signUserOut}>LOG OUT</button>
+      </div>
     </div>
   );
 }

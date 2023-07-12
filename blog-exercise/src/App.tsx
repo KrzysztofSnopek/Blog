@@ -1,5 +1,4 @@
 import { Navbar } from "./Components/Navbar/Navbar";
-import { Main } from "./Components/Main/Main";
 import { Leaderboards } from "./Components/Leaderboards/Leaderboards";
 import { AddPicture } from "./Components/AddPicture/AddPicture";
 import { ViewYours } from "./Components/ViewYours/ViewYours";
@@ -13,8 +12,8 @@ import {
 } from "react-router-dom";
 import { useAuthStore } from "./Components/Auth/AuthStore";
 import { observer } from "mobx-react";
-import { MainWithContext } from "./Components/Main/MainWithContext";
 import { PhotoStoreContextProvider } from "./Helpers/PhotoStore";
+import { Main } from "./Components/Main/Main";
 
 export const App = observer((): JSX.Element => {
   const AuthStore = useAuthStore();
@@ -26,7 +25,7 @@ export const App = observer((): JSX.Element => {
         <Route path="leaderboards" element={<Leaderboards />} />
         <Route path="addpicture" element={<AddPicture />} />
         <Route path="viewyours" element={<ViewYours />} />
-        <Route path="signout" element={<MainWithContext />} />
+        {/* <Route path="signout" element={<MainWithContext />} /> */}
       </Route>
     )
   );

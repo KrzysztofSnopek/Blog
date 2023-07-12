@@ -1,5 +1,5 @@
 import image1 from "../Styling/Images/butterflies.jpg";
-import image2 from "../Styling/Images/cornfield.jpg";
+import image2 from "../Styling/Images/avocado.jpg";
 import image3 from "../Styling/Images/crimson-collared-tanager.jpg";
 import image4 from "../Styling/Images/european-roe-deer.jpg";
 import image5 from "../Styling/Images/squirrel.jpg";

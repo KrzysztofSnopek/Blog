@@ -1,204 +1,109 @@
 import { useState, useEffect } from "react";
-import { storage } from "../../firebase";
-import {
-  ref,
-  listAll,
-  getDownloadURL,
-  getMetadata,
-  updateMetadata,
-} from "firebase/storage";
-import {
-  doc,
-  setDoc,
-  arrayRemove,
-  arrayUnion,
-  onSnapshot,
-} from "@firebase/firestore";
-import { auth, db } from "../../firebase";
+import { listAll, getDownloadURL, getMetadata } from "firebase/storage";
+import { onSnapshot } from "@firebase/firestore";
 import { Loader } from "../../Helpers/Loader";
-import { UploadedImage, LikedPhotos } from "../../Helpers/PhotoRepository";
-import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
-import { BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
+import { LikedPhotos, UploadedImage } from "../../Helpers/PhotoRepository";
+import { usePhotoStore } from "../../Helpers/PhotoStore";
+import { observer } from "mobx-react";
+import {
+  likedPhotosCollectionRef,
+  pictureListRef,
+} from "../../Helpers/StorageReferences";
+import Masonry from "@mui/lab/Masonry";
+import { SinglePhotoPanel } from "./SinglePhotoPanel";
+import ZoomInMapIcon from "@mui/icons-material/ZoomInMap";
+import { Slider } from "./Slider";
 
-export function Main() {
-  const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
+export const Main = observer(() => {
+  const photoStore = usePhotoStore();
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
-  const [tempImgURL, setTempImgURL] = useState<string>("");
-  const [likeNumber, setLikeNumber] = useState<number>(0);
-  const pictureListRef = ref(storage, `projectFiles`);
-  const likedPhotosRef = doc(db, "Photos", `${auth.currentUser?.email}`);
-  const [likedPhotos, setLikedPhotos] = useState<LikedPhotos>();
-
-  const likedPhotosCollectionRef = doc(
-    db,
-    "Photos",
-    `${auth.currentUser?.email}`
-  );
 
   useEffect(() => {
     const unsubscribe = onSnapshot(likedPhotosCollectionRef, (doc) => {
       if (doc.data() !== undefined) {
         const newPhotoData = doc.data() as LikedPhotos;
         const likedPhotos = Object.values(newPhotoData);
-        setLikedPhotos(likedPhotos[0]);
+        photoStore.setLikedPhotos(likedPhotos[0]);
       }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [photoStore]);
 
   useEffect(() => {
-    const imageData: UploadedImage[] = [];
-
     listAll(pictureListRef).then((response) => {
       const promises = response.items.map((item) =>
         Promise.all([getDownloadURL(item), getMetadata(item)])
       );
 
       Promise.all(promises).then((results) => {
+        const imageData: UploadedImage[] = [];
+
         results.forEach(([url, metadata]) => {
           const alt = metadata?.customMetadata?.imageName ?? "";
           const likeCount = metadata.customMetadata.likeCount;
           const storagePathElement = metadata.customMetadata.storagePathElement;
-          imageData.push({ url, alt, storagePathElement, likeCount });
+          imageData.push({
+            url,
+            alt,
+            storagePathElement,
+            likeCount,
+          });
         });
 
-        setPictureList(imageData);
+        photoStore.setPictureList(imageData);
         setIsLoading(false);
       });
     });
-  }, [likeNumber]);
+  }, [photoStore]);
 
   if (isLoading) {
     return <Loader />;
   }
 
-  const getImg = (imgUrl: string) => {
-    setTempImgURL(imgUrl);
-    setIsImgFullScreen(true);
-  };
-
-  const handleLikeDataCreation = async (url: string) => {
-    await setDoc(
-      likedPhotosRef,
-      { likedPhotos: arrayUnion(url) },
-      { merge: true }
-    );
-  };
-
-  const handleLikeDataRemoval = async (url: string) => {
-    await setDoc(
-      likedPhotosRef,
-      { likedPhotos: arrayRemove(url) },
-      { merge: true }
-    );
-  };
-
-  const ClickToLike = (item: UploadedImage) => {
-    return (
-      <BsSuitHeart
-        onClick={() => {
-          changeLikeStatus(item, additive);
-          handleLikeDataCreation(item.url);
-        }}
-      />
-    );
-  };
-
-  const ClickToDislike = (item: UploadedImage) => {
-    return (
-      <BsSuitHeartFill
-        onClick={() => {
-          changeLikeStatus(item, subtractive);
-          handleLikeDataRemoval(item.url);
-        }}
-      />
-    );
-  };
-
-  const isPhotoURLLiked = (item: UploadedImage) => {
-    if (Array.isArray(likedPhotos) && likedPhotos.includes(item.url)) {
-      return <div>{ClickToDislike(item)}</div>;
-    } else {
-      return <div>{ClickToLike(item)}</div>;
-    }
-  };
-
-  const additive = (item: UploadedImage) => {
-    return Number(item.likeCount) + 1;
-  };
-
-  const subtractive = (item: UploadedImage) => {
-    return Number(item.likeCount) - 1;
-  };
-
-  const changeLikeStatus = (
-    item: UploadedImage,
-    addOrRem: (item: UploadedImage) => number
-  ) => {
-    const newAddLikeMetadata = {
-      customMetadata: {
-        likeCount: `${addOrRem(item)}`,
-      },
-    };
-
-    const countRef = ref(storage, `projectFiles/${item.storagePathElement}`);
-
-    updateMetadata(countRef, newAddLikeMetadata).then((metadata) => {
-      setLikeNumber(metadata.customMetadata.likeCount);
-    });
-  };
-
   return (
-    <div>
-      <div
-        className={
-          isImgFullScreen
-            ? "w-full min-h-screen fixed top-0 left-0 flex justify-center items-center bg-slate-900 bg-opacity-20 backdrop-blur-xl shadow-xl z-10"
-            : "hidden"
-        }
-      >
-        <div className="h-5/6">
-          <img
-            src={tempImgURL}
-            className="cursor-pointer max-h-screen"
-            alt=""
-            onClick={() => setIsImgFullScreen(false)}
-          />
-        </div>
-        <div
-          className="cursor-pointer text-slate-600 hover:text-orange-500 fixed top-4 right-4"
-          onClick={() => setIsImgFullScreen(false)}
-        >
-          <DisabledByDefaultOutlinedIcon fontSize="large" color="inherit" />
-        </div>
+    <div className="flex justify-center bg-blue-50 flex-col">
+      <div>
+        <Slider />
       </div>
 
-      <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
-        {pictureList.map((item, index) => {
-          return (
+      <div className="flex justify-center">
+        <div
+          className={
+            photoStore.isImgFullScreen
+              ? "w-full min-h-screen fixed top-0 left-0 flex justify-center items-center bg-slate-900 bg-opacity-50 backdrop-blur-2xl shadow-xl z-10"
+              : "hidden"
+          }
+        >
+          <div className="h-5/6 relative">
+            <img
+              src={photoStore.tempImgURL}
+              className="cursor-pointer max-h-screen"
+              alt=""
+              onClick={() => photoStore.setIsImgFullScreen(false)}
+            />
             <div
-              className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl "
-              key={`${index}-${item.url}`}
+              className="cursor-pointer text-blue-100 hover:text-blue-200 absolute top-2 right-2"
+              onClick={() => photoStore.setIsImgFullScreen(false)}
             >
-              <div className="px-6 pt-6 text-center">{item.alt}</div>
-              <img
-                className="object-contain max-h-full max-w-full p-6 hover:opacity-70 cursor-pointer"
-                src={item.url}
-                alt={item.alt}
-                onClick={() => getImg(item.url)}
-              />
-              <div className="pb-8 text-xl text-slate-950 fixed -right-4 flex flex-col items-center">
-                <span className="p-2 cursor-pointer">
-                  <span className="">{isPhotoURLLiked(item)}</span>
-                  <span>{item.likeCount}</span>
-                </span>
-              </div>
+              <ZoomInMapIcon fontSize="large" color="inherit" />
             </div>
-          );
-        })}
+          </div>
+        </div>
+
+        <div className="flex flex-wrap bg-blue-50 justify-center w-11/12">
+          <Masonry columns={4} spacing={2}>
+            {photoStore.pictureList?.map((item, index) => {
+              return (
+                <div key={item.url} className=" bg-blue-100">
+                  <SinglePhotoPanel index={index} item={item} />
+                </div>
+              );
+            })}
+          </Masonry>
+        </div>
       </div>
     </div>
   );
-}
+});
