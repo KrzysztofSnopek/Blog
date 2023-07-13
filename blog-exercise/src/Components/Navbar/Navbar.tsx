@@ -6,34 +6,34 @@ export function Navbar() {
   const location = useLocation();
 
   return (
-    <div className="bg-blue-50 p-6 text-lg text-slate-700 flex justify-between h-20 font-body">
+    <div className="relative bg-blue-50 py-6 text-lg text-slate-700 flex justify-between h-20 font-body">
       <div>
         <NavLink
           to="/"
-          className={`p-8 ${
+          className={`p-8 relative ${
             location.pathname === "/"
-              ? "font-extrabold"
-              : "font-normal hover:underline hover:decoration-double"
+              ? "font-black bg-blue-300"
+              : "font-bold hover:text-slate-950 before:absolute before:-z-10 before:bottom-0 before:left-[50%] before:w-0 before:h-0 before:bg-blue-200 hover:before:animate-fillNav hover:opacity-70"
           }`}
         >
           GALLERY
         </NavLink>
         <NavLink
           to="/leaderboards"
-          className={`p-8 ${
+          className={`p-8 relative ${
             location.pathname === "/leaderboards"
-              ? "font-extrabold"
-              : "font-normal hover:underline hover:decoration-double"
+              ? "font-black bg-blue-300"
+              : "font-bold hover:text-slate-950 before:absolute before:-z-10 before:bottom-0 before:left-[50%] before:w-0 before:h-0 before:bg-blue-200 hover:before:animate-fillNav hover:opacity-70"
           }`}
         >
           LEADERBOARDS
         </NavLink>
       </div>
       <div
-        className={`border rounded-2xl bg-blue-200 shadow-md hover:scale-125 transition duration-500 hover:shadow-2xl ${
+        className={`border bg-blue-200 hover:scale-150 transition duration-500 hover:shadow-2xl ${
           location.pathname === "/addpicture"
-            ? "font-extrabold scale-125 shadow-2xl"
-            : "font-normal "
+            ? "font-extrabold scale-150 shadow-2xl bg-blue-300"
+            : "font-medium"
         }`}
       >
         <NavLink to="/addpicture" className="p-8">
@@ -43,10 +43,10 @@ export function Navbar() {
       <div>
         <NavLink
           to="/viewyours"
-          className={`p-8 ${
+          className={`p-8 relative ${
             location.pathname === "/viewyours"
-              ? "font-extrabold"
-              : "font-normal hover:underline hover:decoration-double"
+              ? "font-black bg-blue-300"
+              : "font-bold hover:text-slate-950 before:absolute before:-z-10 before:bottom-0 before:left-[50%] before:w-0 before:h-0 before:bg-blue-200 hover:before:animate-fillNav hover:opacity-70"
           }`}
         >
           VIEW YOURS
@@ -54,7 +54,7 @@ export function Navbar() {
         <NavLink
           to="/"
           onClick={AuthStore.signUserOut}
-          className="p-8 hover:underline hover:decoration-double"
+          className="relative p-8 font-bold hover:text-slate-950 before:absolute before:-z-10 before:bottom-0 before:left-[50%] before:w-0 before:h-0 before:bg-blue-200 hover:before:animate-fillNav hover:opacity-70"
         >
           LOG OUT
         </NavLink>

@@ -13,13 +13,17 @@ module.exports = {
           "0 10% 10% 10% rgba(200, 0, 0, 0.5), inset 0 -35px 35px -25px rgba(200, 0, 0, 0.5)",
       },
       dropShadow: {
-        "4xl": "0 20px 15px rgba(30, 64, 175, 0.8)",
+        "4xl": "0 10px 15px rgba(147, 197, 253, 0.8)",
       },
       minHeight: {
         "1/5": "100px",
       },
       animation: {
         scrollToLeft: "scroll 90s linear infinite",
+        fillNav: "fill 2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards",
+      },
+      transitionProperty: {
+        nav: "0.8s all linear",
       },
       keyframes: {
         scroll: {
@@ -30,9 +34,29 @@ module.exports = {
             transform: "translateX(calc(-384px * 10))",
           },
         },
+        fill: {
+          "0%": {
+            width: "0%",
+            height: "5px",
+            left: "50%",
+          },
+          "50%": {
+            width: "100%",
+            height: "5px",
+            left: "0",
+          },
+          "100%": {
+            width: "100%",
+            height: "100%",
+            left: "0",
+          },
+        },
       },
       fontFamily: {
         body: ["Nunito"],
+      },
+      scale: {
+        "-1": "-1",
       },
     },
   },
