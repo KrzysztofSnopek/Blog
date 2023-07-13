@@ -64,11 +64,11 @@ export const Main = observer(() => {
 
   return (
     <div className="flex justify-center bg-blue-50 flex-col">
-      <div className="flex justify-center h-[15vh] items-center flex-col">
-        <h1 className="font-body font-bold text-5xl italic drop-shadow-4xl text-blue-500 underline">
+      <div className="flex justify-end h-[15vh] items-center flex-col">
+        <h1 className="font-body font-bold text-7xl italic drop-shadow-4xl text-blue-500 leading-4 z-10">
           ShowYourPicture
         </h1>
-        <h1 className="font-body font-bold text-5xl italic drop-shadow-4xl text-blue-300 rotate-180 -scale-x-1">
+        <h1 className="font-body font-bold text-7xl italic drop-shadow-4xl rotate-180 -scale-x-1 bg-gradient-to-b from-blue-50 via-blue-200 to-blue-300 bg-clip-text text-transparent">
           ShowYourPicture
         </h1>
       </div>
