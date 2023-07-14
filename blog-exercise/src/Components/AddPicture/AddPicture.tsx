@@ -51,13 +51,13 @@ export const AddPicture = observer(() => {
   };
 
   return (
-    <div className="w-9/12 m-auto">
-      <div className="h-auto flex items-center flex-col">
+    <div className="m-auto bg-blue-50 min-h-[calc(100vh-5rem)] font-body">
+      <div className="flex items-center flex-col pt-10">
         <h1 className="font-bold p-2">Share your pictures with others here!</h1>
 
         <form
           onSubmit={handleImageUpload}
-          className="min-w-full bg-orange-300 flex p-4 justify-between"
+          className="min-w-1/2 bg-blue-200 flex p-4 justify-between"
         >
           <input
             type="file"
@@ -74,21 +74,17 @@ export const AddPicture = observer(() => {
             id="photo-name"
             onChange={(e) => setPictureName(e.target.value)}
           />
-          <button type="submit" className="p-4">
+          <button type="submit" className="p-4 bg-blue-200">
             Share your picture!
           </button>
         </form>
 
         {picturePreview && (
-          <div className="h-1/4 max-w-screen-sm p-12">
-            <img
-              className="max-h-full"
-              src={URL.createObjectURL(picturePreview)}
-              alt="Thumb"
-            />
+          <div className=" bg-blue-100">
+            <img src={URL.createObjectURL(picturePreview)} alt="Thumb" />
             <button
               onClick={removeSelectedImage}
-              className="bg-orange-300 w-full p-4 font-bold"
+              className="bg-blue-200 w-full p-4 font-bold"
             >
               Close the image preview
             </button>
