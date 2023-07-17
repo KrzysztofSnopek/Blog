@@ -51,44 +51,55 @@ export const AddPicture = observer(() => {
   };
 
   return (
-    <div className="m-auto bg-blue-50 min-h-[calc(100vh-5rem)] font-body">
-      <div className="flex items-center flex-col pt-10">
-        <h1 className="font-bold p-2">Share your pictures with others here!</h1>
-
-        <form
-          onSubmit={handleImageUpload}
-          className="min-w-1/2 bg-blue-200 flex p-4 justify-between"
-        >
-          <input
-            type="file"
-            id="photo-picker"
-            className="p-4"
-            onChange={(e) => {
-              handlePictureChange(e);
-            }}
-          />
-          <input
-            className="p-4"
-            type="text"
-            placeholder="Add picture name"
-            id="photo-name"
-            onChange={(e) => setPictureName(e.target.value)}
-          />
-          <button type="submit" className="p-4 bg-blue-200">
-            Share your picture!
-          </button>
-        </form>
+    <div className="flex justify-center bg-blue-50 min-h-[calc(100vh-5rem)] font-body">
+      <div className="flex items-center flex-col pt-10 w-1/2">
+        <h1 className="font-bold p-2 w-full bg-blue-300 text-center">
+          Share your pictures with others here!
+        </h1>
+        <div className="w-full">
+          <form
+            onSubmit={handleImageUpload}
+            className="bg-blue-300 flex p-4 justify-between"
+          >
+            <input
+              type="file"
+              id="photo-picker"
+              className="p-4"
+              onChange={(e) => {
+                handlePictureChange(e);
+              }}
+            />
+            <input
+              className="p-4"
+              type="text"
+              placeholder="Add picture name"
+              id="photo-name"
+              onChange={(e) => setPictureName(e.target.value)}
+            />
+            <button type="submit" className="p-4 bg-blue-200">
+              Share your picture!
+            </button>
+          </form>
+        </div>
 
         {picturePreview && (
-          <div className=" bg-blue-100">
-            <img src={URL.createObjectURL(picturePreview)} alt="Thumb" />
+          <>
+            <div className="bg-blue-200 flex flex-col w-full items-center">
+              <div>
+                <img
+                  src={URL.createObjectURL(picturePreview)}
+                  alt="Thumb"
+                  className="max-h-[60vh] w-auto"
+                />
+              </div>
+            </div>
             <button
               onClick={removeSelectedImage}
-              className="bg-blue-200 w-full p-4 font-bold"
+              className="bg-blue-300 w-full p-4 font-bold"
             >
               Close the image preview
             </button>
-          </div>
+          </>
         )}
       </div>
     </div>
