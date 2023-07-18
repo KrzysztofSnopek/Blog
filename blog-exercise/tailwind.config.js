@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        "pattern-main": "url('./Styling/mountains.jpg')",
+        "pattern-main": "url('./Styling/ink.jpg')",
       },
       boxShadow: {
         "inner-top-bottom":
