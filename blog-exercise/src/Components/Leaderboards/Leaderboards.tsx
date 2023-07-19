@@ -5,9 +5,12 @@ import { doc, onSnapshot } from "@firebase/firestore";
 import { auth, db } from "../../firebase";
 import { Loader } from "../../Helpers/Loader";
 import { UploadedImage, LikedPhotos } from "../../Helpers/PhotoRepository";
+import { usePhotoStore } from "../../Helpers/PhotoStore";
 
 export function Leaderboards() {
-  const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
+  const photoStore = usePhotoStore();
+
+  // const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
@@ -27,46 +30,45 @@ export function Leaderboards() {
 
       setLikedPhotos(likedPhotos[0]);
     });
-
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const imageData: UploadedImage[] = [];
+  // useEffect(() => {
+  //   const imageData: UploadedImage[] = [];
 
-    listAll(pictureListRef).then((response) => {
-      const promises = response.items.map((item) =>
-        Promise.all([getDownloadURL(item), getMetadata(item)])
-      );
+  //   listAll(pictureListRef).then((response) => {
+  //     const promises = response.items.map((item) =>
+  //       Promise.all([getDownloadURL(item), getMetadata(item)])
+  //     );
 
-      Promise.all(promises).then((results) => {
-        results.forEach(([url, metadata]) => {
-          const alt = metadata?.customMetadata?.imageName ?? "";
-          const likeCount = metadata.customMetadata.likeCount;
-          const storagePathElement = metadata.customMetadata.storagePathElement;
-          imageData.push({ url, alt, storagePathElement, likeCount });
-        });
+  //     Promise.all(promises).then((results) => {
+  //       results.forEach(([url, metadata]) => {
+  //         const alt = metadata?.customMetadata?.imageName ?? "";
+  //         const likeCount = metadata.customMetadata.likeCount;
+  //         const storagePathElement = metadata.customMetadata.storagePathElement;
+  //         imageData.push({ url, alt, storagePathElement, likeCount });
+  //       });
 
-        setPictureList(imageData);
-        setIsLoading(false);
-      });
-    });
-  }, [likeNumber]);
+  //       setPictureList(imageData);
+  //       setIsLoading(false);
+  //     });
+  //   });
+  // }, [likeNumber]);
 
-  pictureList.sort(function (a, b) {
+  photoStore.pictureList.sort(function (a, b) {
     return b.likeCount - a.likeCount;
   });
-  if (pictureList.length > 6) {
-    setPictureList(pictureList.slice(0, 6));
+  if (photoStore.pictureList.length > 6) {
+    photoStore.setPictureList(photoStore.pictureList.slice(0, 6));
   }
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  // if (isLoading) {
+  //   return <Loader />;
+  // }
 
   const leaderURL = (url: string) => {
     if (url === "") {
-      return pictureList[0].url;
+      return photoStore.pictureList[0].url;
     } else return tempImgURL;
   };
 
@@ -78,7 +80,7 @@ export function Leaderboards() {
   return (
     <div className="flex flex-row content-end">
       <div className="grid grid-cols-6 grid-rows-3 bg-slate-400">
-        {pictureList.map((item, index) => {
+        {photoStore.pictureList.map((item, index) => {
           return (
             <div
               className="flex justify-center items-center bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl p-4"
