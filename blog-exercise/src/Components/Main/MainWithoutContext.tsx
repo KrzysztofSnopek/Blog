@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
 import { storage } from "../../firebase";
-import {
-  ref,
-  listAll,
-  getDownloadURL,
-  getMetadata,
-  updateMetadata,
-} from "firebase/storage";
+import { ref, updateMetadata } from "firebase/storage";
 import {
   doc,
   setDoc,
@@ -20,14 +14,15 @@ import { UploadedImage, LikedPhotos } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
 import { fetchPictureList } from "../../Helpers/fetchPictureList";
+import { usePhotoStore } from "../../Helpers/PhotoStore";
 
 export function MainWithoutContext() {
+  const photoStore = usePhotoStore();
+
   const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
   const [likeNumber, setLikeNumber] = useState<number>(0);
-  const pictureListRef = ref(storage, `projectFiles`);
   const likedPhotosRef = doc(db, "Photos", `${auth.currentUser?.email}`);
   const [likedPhotos, setLikedPhotos] = useState<LikedPhotos>();
 
@@ -50,7 +45,7 @@ export function MainWithoutContext() {
   }, []);
 
   useEffect(() => {
-    setIsLoading(true);
+    photoStore.setIsLoading(true);
 
     const fetchData = async () => {
       try {
@@ -59,13 +54,13 @@ export function MainWithoutContext() {
       } catch (error) {
         console.error("Could not fetch picture list:", error);
       } finally {
-        setIsLoading(false);
+        photoStore.setIsLoading(false);
       }
     };
     fetchData();
   }, [likeNumber]);
 
-  if (isLoading) {
+  if (photoStore.isLoading) {
     return <Loader />;
   }
 
