@@ -10,12 +10,8 @@ import { usePhotoStore } from "../../Helpers/PhotoStore";
 export function Leaderboards() {
   const photoStore = usePhotoStore();
 
-  // const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
-  const [likeNumber, setLikeNumber] = useState<number>(0);
-  const pictureListRef = ref(storage, `projectFiles`);
   const [likedPhotos, setLikedPhotos] = useState<LikedPhotos>();
 
   const likedPhotosCollectionRef = doc(
@@ -33,38 +29,12 @@ export function Leaderboards() {
     return () => unsubscribe();
   }, []);
 
-  // useEffect(() => {
-  //   const imageData: UploadedImage[] = [];
-
-  //   listAll(pictureListRef).then((response) => {
-  //     const promises = response.items.map((item) =>
-  //       Promise.all([getDownloadURL(item), getMetadata(item)])
-  //     );
-
-  //     Promise.all(promises).then((results) => {
-  //       results.forEach(([url, metadata]) => {
-  //         const alt = metadata?.customMetadata?.imageName ?? "";
-  //         const likeCount = metadata.customMetadata.likeCount;
-  //         const storagePathElement = metadata.customMetadata.storagePathElement;
-  //         imageData.push({ url, alt, storagePathElement, likeCount });
-  //       });
-
-  //       setPictureList(imageData);
-  //       setIsLoading(false);
-  //     });
-  //   });
-  // }, [likeNumber]);
-
   photoStore.pictureList.sort(function (a, b) {
     return b.likeCount - a.likeCount;
   });
   if (photoStore.pictureList.length > 6) {
     photoStore.setPictureList(photoStore.pictureList.slice(0, 6));
   }
-
-  // if (isLoading) {
-  //   return <Loader />;
-  // }
 
   const leaderURL = (url: string) => {
     if (url === "") {

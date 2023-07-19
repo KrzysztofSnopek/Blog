@@ -19,6 +19,7 @@ import { Loader } from "../../Helpers/Loader";
 import { UploadedImage, LikedPhotos } from "../../Helpers/PhotoRepository";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
+import { fetchPictureList } from "../../Helpers/fetchPictureList";
 
 export function MainWithoutContext() {
   const [pictureList, setPictureList] = useState<UploadedImage[]>([]);
@@ -49,25 +50,19 @@ export function MainWithoutContext() {
   }, []);
 
   useEffect(() => {
-    const imageData: UploadedImage[] = [];
+    setIsLoading(true);
 
-    listAll(pictureListRef).then((response) => {
-      const promises = response.items.map((item) =>
-        Promise.all([getDownloadURL(item), getMetadata(item)])
-      );
-
-      Promise.all(promises).then((results) => {
-        results.forEach(([url, metadata]) => {
-          const alt = metadata?.customMetadata?.imageName ?? "";
-          const likeCount = metadata.customMetadata.likeCount;
-          const storagePathElement = metadata.customMetadata.storagePathElement;
-          imageData.push({ url, alt, storagePathElement, likeCount });
-        });
-
+    const fetchData = async () => {
+      try {
+        const imageData = await fetchPictureList();
         setPictureList(imageData);
+      } catch (error) {
+        console.error("Could not fetch picture list:", error);
+      } finally {
         setIsLoading(false);
-      });
-    });
+      }
+    };
+    fetchData();
   }, [likeNumber]);
 
   if (isLoading) {
