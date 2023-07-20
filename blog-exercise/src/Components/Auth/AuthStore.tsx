@@ -27,6 +27,7 @@ export default class AuthStore {
       });
       this.currUser = auth.currentUser;
       this.setIsAuth(true);
+      window.localStorage.setItem("user", JSON.stringify(this.currUser?.email));
     } catch (error) {
       console.log(error);
     }
@@ -36,6 +37,7 @@ export default class AuthStore {
     await signOut(auth);
     this.cookie.remove("auth-token");
     this.setIsAuth(false);
+    window.localStorage.removeItem("user");
   };
 }
 

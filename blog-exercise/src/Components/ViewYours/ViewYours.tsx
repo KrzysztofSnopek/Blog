@@ -3,12 +3,16 @@ import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefault
 import { usePhotoStore } from "../../Helpers/PhotoStore";
 import { fetchPictureList } from "../../Helpers/fetchPictureList";
 import { Loader } from "../../Helpers/Loader";
+import { UploadedImage } from "../../Helpers/PhotoRepository";
 
 export function ViewYours() {
   const photoStore = usePhotoStore();
 
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
+  const [currentUserPictureList, setCurrentUserPictureList] = useState<
+    UploadedImage[]
+  >([]);
 
   useEffect(() => {
     photoStore.setIsLoading(true);
@@ -28,6 +32,8 @@ export function ViewYours() {
   if (photoStore.isLoading) {
     return <Loader />;
   }
+
+  console.log("first", photoStore.pictureList[0].storagePathElement);
 
   const getYourImg = (imgUrl: string) => {
     setTempImgURL(imgUrl);
