@@ -1,13 +1,20 @@
 import { makeAutoObservable } from "mobx";
 import React, { useContext, useState } from "react";
 import { UploadedImage } from "./PhotoRepository";
-import { ref, updateMetadata } from "firebase/storage";
+import {
+  getDownloadURL,
+  getMetadata,
+  listAll,
+  ref,
+  updateMetadata,
+} from "firebase/storage";
 import { storage } from "../firebase";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { doc, setDoc, arrayRemove, arrayUnion } from "@firebase/firestore";
 import { db } from "../firebase";
 import { useAuthUserMail } from "./useAuthUserMail";
+import { pictureListRef } from "./StorageReferences";
 
 export default class PhotoStore {
   constructor() {

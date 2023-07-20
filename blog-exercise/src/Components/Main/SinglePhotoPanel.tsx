@@ -52,7 +52,6 @@ export const SinglePhotoPanel = (props: ImageProps) => {
           className="w-full h-auto min-h-1/5 hover:opacity-75 "
           src={props.item.url}
           alt={props.item.alt}
-          // loading="lazy"
           onClick={() => getImg(props.item.url)}
         />
 

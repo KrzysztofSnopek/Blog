@@ -6,6 +6,7 @@ import { auth, db } from "../../firebase";
 import { Loader } from "../../Helpers/Loader";
 import { UploadedImage, LikedPhotos } from "../../Helpers/PhotoRepository";
 import { usePhotoStore } from "../../Helpers/PhotoStore";
+import { fetchPictureList } from "../../Helpers/fetchPictureList";
 
 export function Leaderboards() {
   const photoStore = usePhotoStore();
@@ -13,6 +14,10 @@ export function Leaderboards() {
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
   const [likedPhotos, setLikedPhotos] = useState<LikedPhotos>();
+  const [leadingPictureList, setLeadingPictureList] = useState<UploadedImage[]>(
+    []
+  );
+  const [likeNumber, setLikeNumber] = useState<number>(0);
 
   const likedPhotosCollectionRef = doc(
     db,
@@ -29,18 +34,39 @@ export function Leaderboards() {
     return () => unsubscribe();
   }, []);
 
-  photoStore.pictureList.sort(function (a, b) {
-    return b.likeCount - a.likeCount;
-  });
-  if (photoStore.pictureList.length > 6) {
-    photoStore.setPictureList(photoStore.pictureList.slice(0, 6));
+  useEffect(() => {
+    photoStore.setIsLoading(true);
+
+    const fetchData = async () => {
+      try {
+        await fetchPictureList(photoStore);
+        setLeadingPictureList(photoStore.pictureList);
+      } catch (error) {
+        console.error("Could not fetch picture list:", error);
+      } finally {
+        photoStore.setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, [photoStore]);
+
+  if (photoStore.isLoading) {
+    return <Loader />;
   }
 
-  const leaderURL = (url: string) => {
-    if (url === "") {
-      return photoStore.pictureList[0].url;
-    } else return tempImgURL;
-  };
+  leadingPictureList.sort(function (a, b) {
+    return b.likeCount - a.likeCount;
+  });
+  if (leadingPictureList.length > 6) {
+    setLeadingPictureList(leadingPictureList.slice(0, 6));
+  }
+
+  // const leaderURL = (url: string) => {
+  //   if (url === "") {
+  //     console.log(leadingPictureList[0]);
+  //     return leadingPictureList[0].url;
+  //   } else return tempImgURL;
+  // };
 
   const getImg = (imgUrl: string) => {
     setTempImgURL(imgUrl);
@@ -50,7 +76,7 @@ export function Leaderboards() {
   return (
     <div className="flex flex-row content-end">
       <div className="grid grid-cols-6 grid-rows-3 bg-slate-400">
-        {photoStore.pictureList.map((item, index) => {
+        {leadingPictureList.map((item, index) => {
           return (
             <div
               className="flex justify-center items-center bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl p-4"
@@ -66,11 +92,11 @@ export function Leaderboards() {
           );
         })}
         <div className="order-4 col-start-2 col-end-6 row-start-1 row-end-4 flex">
-          <img
+          {/* <img
             className="m-auto max-h-[calc(100vh-5rem)]"
             src={leaderURL(tempImgURL)}
             alt=""
-          />
+          /> */}
         </div>
       </div>
     </div>

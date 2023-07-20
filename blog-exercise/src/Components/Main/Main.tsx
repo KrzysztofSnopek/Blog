@@ -13,11 +13,10 @@ import Masonry from "@mui/lab/Masonry";
 import { SinglePhotoPanel } from "./SinglePhotoPanel";
 import ZoomInMapIcon from "@mui/icons-material/ZoomInMap";
 import { Slider } from "./Slider";
+import { fetchPictureList } from "../../Helpers/fetchPictureList";
 
 export const Main = observer(() => {
   const photoStore = usePhotoStore();
-
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(likedPhotosCollectionRef, (doc) => {
@@ -32,33 +31,21 @@ export const Main = observer(() => {
   }, [photoStore]);
 
   useEffect(() => {
-    listAll(pictureListRef).then((response) => {
-      const promises = response.items.map((item) =>
-        Promise.all([getDownloadURL(item), getMetadata(item)])
-      );
+    photoStore.setIsLoading(true);
 
-      Promise.all(promises).then((results) => {
-        const imageData: UploadedImage[] = [];
-
-        results.forEach(([url, metadata]) => {
-          const alt = metadata?.customMetadata?.imageName ?? "";
-          const likeCount = metadata.customMetadata.likeCount;
-          const storagePathElement = metadata.customMetadata.storagePathElement;
-          imageData.push({
-            url,
-            alt,
-            storagePathElement,
-            likeCount,
-          });
-        });
-
-        photoStore.setPictureList(imageData);
-        setIsLoading(false);
-      });
-    });
+    const fetchData = async () => {
+      try {
+        await fetchPictureList(photoStore);
+      } catch (error) {
+        console.error("Could not fetch picture list:", error);
+      } finally {
+        photoStore.setIsLoading(false);
+      }
+    };
+    fetchData();
   }, [photoStore]);
 
-  if (isLoading) {
+  if (photoStore.isLoading) {
     return <Loader />;
   }
 

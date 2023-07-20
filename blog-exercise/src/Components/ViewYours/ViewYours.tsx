@@ -1,12 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 import { usePhotoStore } from "../../Helpers/PhotoStore";
+import { fetchPictureList } from "../../Helpers/fetchPictureList";
+import { Loader } from "../../Helpers/Loader";
 
 export function ViewYours() {
   const photoStore = usePhotoStore();
 
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
+
+  useEffect(() => {
+    photoStore.setIsLoading(true);
+
+    const fetchData = async () => {
+      try {
+        await fetchPictureList(photoStore);
+      } catch (error) {
+        console.error("Could not fetch picture list:", error);
+      } finally {
+        photoStore.setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, [photoStore]);
+
+  if (photoStore.isLoading) {
+    return <Loader />;
+  }
 
   const getYourImg = (imgUrl: string) => {
     setTempImgURL(imgUrl);

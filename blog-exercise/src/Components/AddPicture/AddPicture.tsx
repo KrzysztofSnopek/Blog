@@ -52,7 +52,7 @@ export const AddPicture = observer(() => {
 
   return (
     <div className="flex justify-center bg-blue-50 min-h-[calc(100vh-5rem)] font-body">
-      <div className="flex items-center flex-col pt-10 w-1/2">
+      <div className="flex items-center flex-col pt-10 w-1/2 max-lg:w-full">
         <h1 className="font-bold p-2 w-full bg-blue-300 text-center">
           Share your pictures with others here!
         </h1>
