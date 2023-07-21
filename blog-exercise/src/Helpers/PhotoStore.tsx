@@ -14,8 +14,10 @@ export default class PhotoStore {
   constructor() {
     makeAutoObservable(this);
   }
-  mailForRef: string = useAuthUserMail();
-  likedPhotosRef = doc(db, "Photos", `${this.mailForRef}`);
+  // mailForRef: string = useAuthUserMail();
+  // likedPhotosRef = doc(db, "Photos", `${this.mailForRef}`);
+  // currentUserMail: string = window.localStorage.getItem("user") ?? "";
+  // likedPhotosRef = doc(db, "Photos", this.currentUserMail);
   likeNumber: number = 0;
   isLoading: boolean = true;
   pictureList: UploadedImage[] = [];
@@ -54,10 +56,11 @@ export default class PhotoStore {
 
   handleLikeDataCreation = async (
     url: string,
-    addOrRem: (item: UploadedImage) => number
+    addOrRem: (item: UploadedImage) => number,
+    currentUserMail: string
   ) => {
     await setDoc(
-      this.likedPhotosRef,
+      doc(db, "Photos", currentUserMail),
       { likedPhotos: arrayUnion(url) },
       { merge: true }
     );
@@ -66,10 +69,11 @@ export default class PhotoStore {
 
   handleLikeDataRemoval = async (
     url: string,
-    addOrRem: (item: UploadedImage) => number
+    addOrRem: (item: UploadedImage) => number,
+    currentUserMail: string
   ) => {
     await setDoc(
-      this.likedPhotosRef,
+      doc(db, "Photos", currentUserMail),
       { likedPhotos: arrayRemove(url) },
       { merge: true }
     );
@@ -131,38 +135,43 @@ export default class PhotoStore {
     };
   };
 
-  debouncedClickToDislike = this.debounce((item: UploadedImage) => {
-    this.changeLikeStatus(item, this.subtractive);
-    this.handleLikeDataRemoval(item.url, this.subtractive);
-    const filteredLikedPhotos = this.likedPhotos.filter(
-      (photoURL) => photoURL !== item.url
-    );
-    this.setLikedPhotos(filteredLikedPhotos);
-  }, 1000);
+  debouncedClickToDislike = this.debounce(
+    (item: UploadedImage, currentUserMail: string) => {
+      this.changeLikeStatus(item, this.subtractive);
+      this.handleLikeDataRemoval(item.url, this.subtractive, currentUserMail);
+      const filteredLikedPhotos = this.likedPhotos.filter(
+        (photoURL) => photoURL !== item.url
+      );
+      this.setLikedPhotos(filteredLikedPhotos);
+    },
+    1000
+  );
 
-  debouncedClicktoLike = this.debounce((item: UploadedImage) => {
-    this.changeLikeStatus(item, this.additive);
-    this.handleLikeDataCreation(item.url, this.additive);
-    this.setLikedPhotos([...this.likedPhotos, item.url]);
-  });
+  debouncedClicktoLike = this.debounce(
+    (item: UploadedImage, currentUserMail: string) => {
+      this.changeLikeStatus(item, this.additive);
+      this.handleLikeDataCreation(item.url, this.additive, currentUserMail);
+      this.setLikedPhotos([...this.likedPhotos, item.url]);
+    }
+  );
 
-  ClickToLike = (item: UploadedImage) => {
+  ClickToLike = (item: UploadedImage, mail: string) => {
     return (
       <FavoriteBorderIcon
         fontSize="large"
         onClick={() => {
-          this.debouncedClicktoLike(item);
+          this.debouncedClicktoLike(item, mail);
         }}
       />
     );
   };
 
-  ClickToDislike = (item: UploadedImage) => {
+  ClickToDislike = (item: UploadedImage, mail: string) => {
     return (
       <FavoriteIcon
         fontSize="large"
         onClick={() => {
-          this.debouncedClickToDislike(item);
+          this.debouncedClickToDislike(item, mail);
         }}
       />
     );

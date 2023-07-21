@@ -95,7 +95,6 @@ export const ViewYours = observer(() => {
           );
         })}
       </div>
-      <div>upa</div>
     </div>
   );
 });

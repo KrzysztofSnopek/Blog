@@ -2,11 +2,10 @@ import { auth, db, storage } from "../firebase";
 import { StorageReference, ref } from "firebase/storage";
 import { doc } from "@firebase/firestore";
 
-const likedPhotosCollectionRef = doc(
-  db,
-  "Photos",
-  `${auth.currentUser?.email}`
-);
+const currentUserMail: string =
+  window.localStorage.getItem("user")?.replace(/"/g, "") ?? "";
+
+const likedPhotosCollectionRef = doc(db, "Photos", currentUserMail);
 
 const pictureListRef: StorageReference = ref(storage, `projectFiles`);
 

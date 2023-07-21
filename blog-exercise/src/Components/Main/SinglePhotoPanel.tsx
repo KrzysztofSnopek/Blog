@@ -13,6 +13,8 @@ export const SinglePhotoPanel = (props: ImageProps) => {
   const photoStore = usePhotoStore();
 
   const [display, setDisplay] = useState("hidden");
+  const currentUserMail: string =
+    window.localStorage.getItem("user")?.replace(/"/g, "") ?? "";
 
   const showButton = (e: any) => {
     e.preventDefault();
@@ -34,9 +36,9 @@ export const SinglePhotoPanel = (props: ImageProps) => {
       Array.isArray(photoStore.likedPhotos) &&
       photoStore.likedPhotos.includes(item.url)
     ) {
-      return <div>{photoStore.ClickToDislike(item)}</div>;
+      return <div>{photoStore.ClickToDislike(item, currentUserMail)}</div>;
     } else {
-      return <div>{photoStore.ClickToLike(item)}</div>;
+      return <div>{photoStore.ClickToLike(item, currentUserMail)}</div>;
     }
   };
 

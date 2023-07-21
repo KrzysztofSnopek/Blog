@@ -32,7 +32,6 @@ export const Main = observer(() => {
 
   useEffect(() => {
     photoStore.setIsLoading(true);
-    console.log("dupa1");
 
     const fetchData = async () => {
       try {
