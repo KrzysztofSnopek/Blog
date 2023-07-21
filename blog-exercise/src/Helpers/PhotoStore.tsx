@@ -167,22 +167,6 @@ export default class PhotoStore {
       />
     );
   };
-
-  ClickToDislike2 = (item: UploadedImage) => {
-    return (
-      <FavoriteIcon
-        fontSize="large"
-        onClick={() => {
-          this.changeLikeStatus(item, this.subtractive);
-          this.handleLikeDataRemoval(item.url, this.subtractive);
-          const filteredLikedPhotos = this.likedPhotos.filter(
-            (photoURL) => photoURL !== item.url
-          );
-          this.setLikedPhotos(filteredLikedPhotos);
-        }}
-      />
-    );
-  };
 }
 type PhotoStoreContextValue = PhotoStore;
 export const PhotoStoreContext =
