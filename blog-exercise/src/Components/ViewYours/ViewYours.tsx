@@ -3,16 +3,27 @@ import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefault
 import { usePhotoStore } from "../../Helpers/PhotoStore";
 import { fetchPictureList } from "../../Helpers/fetchPictureList";
 import { Loader } from "../../Helpers/Loader";
-import { UploadedImage } from "../../Helpers/PhotoRepository";
+import { LikedPhotos, UploadedImage } from "../../Helpers/PhotoRepository";
+import { likedPhotosCollectionRef } from "../../Helpers/StorageReferences";
+import { onSnapshot } from "@firebase/firestore";
+import { observer } from "mobx-react";
 
-export function ViewYours() {
+export const ViewYours = observer(() => {
   const photoStore = usePhotoStore();
 
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
-  const [currentUserPictureList, setCurrentUserPictureList] = useState<
-    UploadedImage[]
-  >([]);
+
+  const currentUser = window.localStorage.getItem("user");
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(likedPhotosCollectionRef, (doc) => {
+      const likedPhotos = Object.values(doc.data() as LikedPhotos);
+
+      photoStore.setLikedPhotos(likedPhotos[0]);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     photoStore.setIsLoading(true);
@@ -26,19 +37,22 @@ export function ViewYours() {
         photoStore.setIsLoading(false);
       }
     };
+
     fetchData();
-  }, [photoStore]);
+  }, []);
 
-  if (photoStore.isLoading) {
-    return <Loader />;
-  }
-
-  console.log("first", photoStore.pictureList[0].storagePathElement);
+  const currentUserPictureList: UploadedImage[] = photoStore.pictureList.filter(
+    (picture) => `"${picture.storagePathElement.split("_")[0]}"` === currentUser
+  );
 
   const getYourImg = (imgUrl: string) => {
     setTempImgURL(imgUrl);
     setIsImgFullScreen(true);
   };
+
+  if (photoStore.isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="bg-slate-400">
@@ -63,7 +77,7 @@ export function ViewYours() {
         </div>
       </div>
       <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
-        {photoStore.pictureList.map((item, index) => {
+        {currentUserPictureList.map((item, index) => {
           return (
             <div
               className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl hover:opacity-70 cursor-pointer"
@@ -81,6 +95,7 @@ export function ViewYours() {
           );
         })}
       </div>
+      <div>upa</div>
     </div>
   );
-}
+});

@@ -10,7 +10,7 @@ import { convertFile } from "../../Helpers/utils";
 export const AddPicture = observer(() => {
   const [filebase64, setFileBase64] = useState<string>("");
   const [pictureName, setPictureName] = useState<string>("");
-  const userName = auth.currentUser?.displayName ?? "";
+  const userName = auth.currentUser?.email ?? "";
   const storagePathElement = userName + "_" + v4();
   const [picturePreview, setPicturePreview] = useState();
 

@@ -1,13 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import React, { useContext, useState } from "react";
 import { UploadedImage } from "./PhotoRepository";
-import {
-  getDownloadURL,
-  getMetadata,
-  listAll,
-  ref,
-  updateMetadata,
-} from "firebase/storage";
+import { ref, updateMetadata } from "firebase/storage";
 import { storage } from "../firebase";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";

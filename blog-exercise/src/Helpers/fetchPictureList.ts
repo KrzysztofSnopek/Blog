@@ -1,7 +1,7 @@
 import { listAll, getDownloadURL, getMetadata } from "firebase/storage";
 import { UploadedImage } from "./PhotoRepository";
 import { pictureListRef } from "./StorageReferences";
-import PhotoStore, { usePhotoStore } from "./PhotoStore";
+import PhotoStore from "./PhotoStore";
 
 export const fetchPictureList = async (store: PhotoStore) => {
   const imageData: UploadedImage[] = [];

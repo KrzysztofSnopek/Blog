@@ -25,7 +25,6 @@ export const App = observer((): JSX.Element => {
         <Route path="leaderboards" element={<Leaderboards />} />
         <Route path="addpicture" element={<AddPicture />} />
         <Route path="viewyours" element={<ViewYours />} />
-        {/* <Route path="signout" element={<MainWithContext />} /> */}
       </Route>
     )
   );
