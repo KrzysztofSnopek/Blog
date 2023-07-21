@@ -61,13 +61,6 @@ export function Leaderboards() {
     setLeadingPictureList(leadingPictureList.slice(0, 6));
   }
 
-  // const leaderURL = (url: string) => {
-  //   if (url === "") {
-  //     console.log(leadingPictureList[0]);
-  //     return leadingPictureList[0].url;
-  //   } else return tempImgURL;
-  // };
-
   const getImg = (imgUrl: string) => {
     setTempImgURL(imgUrl);
     setIsImgFullScreen(true);
@@ -92,11 +85,11 @@ export function Leaderboards() {
           );
         })}
         <div className="order-4 col-start-2 col-end-6 row-start-1 row-end-4 flex">
-          {/* <img
+          <img
             className="m-auto max-h-[calc(100vh-5rem)]"
-            src={leaderURL(tempImgURL)}
+            src={leadingPictureList[0]?.url}
             alt=""
-          /> */}
+          />
         </div>
       </div>
     </div>
