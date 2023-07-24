@@ -7,17 +7,11 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { doc, setDoc, arrayRemove, arrayUnion } from "@firebase/firestore";
 import { db } from "../firebase";
-import { useAuthUserMail } from "./useAuthUserMail";
-import { pictureListRef } from "./StorageReferences";
 
 export default class PhotoStore {
   constructor() {
     makeAutoObservable(this);
   }
-  // mailForRef: string = useAuthUserMail();
-  // likedPhotosRef = doc(db, "Photos", `${this.mailForRef}`);
-  // currentUserMail: string = window.localStorage.getItem("user") ?? "";
-  // likedPhotosRef = doc(db, "Photos", this.currentUserMail);
   likeNumber: number = 0;
   isLoading: boolean = true;
   pictureList: UploadedImage[] = [];

@@ -1,22 +1,25 @@
-import { useState, useEffect } from "react";
-import { listAll, getDownloadURL, getMetadata } from "firebase/storage";
-import { onSnapshot } from "@firebase/firestore";
+import { useEffect } from "react";
+import { onSnapshot, doc } from "@firebase/firestore";
 import { Loader } from "../../Helpers/Loader";
-import { LikedPhotos, UploadedImage } from "../../Helpers/PhotoRepository";
+import { LikedPhotos } from "../../Helpers/PhotoRepository";
 import { usePhotoStore } from "../../Helpers/PhotoStore";
 import { observer } from "mobx-react";
-import {
-  likedPhotosCollectionRef,
-  pictureListRef,
-} from "../../Helpers/StorageReferences";
 import Masonry from "@mui/lab/Masonry";
 import { SinglePhotoPanel } from "./SinglePhotoPanel";
 import ZoomInMapIcon from "@mui/icons-material/ZoomInMap";
 import { Slider } from "./Slider";
 import { fetchPictureList } from "../../Helpers/fetchPictureList";
+import { useAuthStore } from "../Auth/AuthStore";
+import { db } from "../../firebase";
 
 export const Main = observer(() => {
   const photoStore = usePhotoStore();
+  const authStore = useAuthStore();
+
+  const currentUserMail: string =
+    window.localStorage.getItem("user")?.replace(/"/g, "") ?? "no current user";
+
+  const likedPhotosCollectionRef = doc(db, "Photos", currentUserMail);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(likedPhotosCollectionRef, (doc) => {
@@ -28,7 +31,7 @@ export const Main = observer(() => {
     });
 
     return () => unsubscribe();
-  }, [photoStore]);
+  }, [likedPhotosCollectionRef]);
 
   useEffect(() => {
     photoStore.setIsLoading(true);
@@ -93,7 +96,11 @@ export const Main = observer(() => {
             {photoStore.pictureList?.map((item, index) => {
               return (
                 <div key={item.url} className=" bg-blue-100">
-                  <SinglePhotoPanel index={index} item={item} />
+                  <SinglePhotoPanel
+                    index={index}
+                    item={item}
+                    currentUserMail={authStore.currentUserMail}
+                  />
                 </div>
               );
             })}

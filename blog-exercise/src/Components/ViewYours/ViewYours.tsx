@@ -4,9 +4,9 @@ import { usePhotoStore } from "../../Helpers/PhotoStore";
 import { fetchPictureList } from "../../Helpers/fetchPictureList";
 import { Loader } from "../../Helpers/Loader";
 import { LikedPhotos, UploadedImage } from "../../Helpers/PhotoRepository";
-import { likedPhotosCollectionRef } from "../../Helpers/StorageReferences";
-import { onSnapshot } from "@firebase/firestore";
+import { onSnapshot, doc } from "@firebase/firestore";
 import { observer } from "mobx-react";
+import { db } from "../../firebase";
 
 export const ViewYours = observer(() => {
   const photoStore = usePhotoStore();
@@ -14,7 +14,10 @@ export const ViewYours = observer(() => {
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
 
-  const currentUser = window.localStorage.getItem("user");
+  const currentUserMail: string =
+    window.localStorage.getItem("user")?.replace(/"/g, "") ?? "no current user";
+
+  const likedPhotosCollectionRef = doc(db, "Photos", currentUserMail);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(likedPhotosCollectionRef, (doc) => {
@@ -42,7 +45,7 @@ export const ViewYours = observer(() => {
   }, []);
 
   const currentUserPictureList: UploadedImage[] = photoStore.pictureList.filter(
-    (picture) => `"${picture.storagePathElement.split("_")[0]}"` === currentUser
+    (picture) => picture.storagePathElement.split("_")[0] === currentUserMail
   );
 
   const getYourImg = (imgUrl: string) => {
@@ -55,7 +58,7 @@ export const ViewYours = observer(() => {
   }
 
   return (
-    <div className="bg-slate-400">
+    <div className="bg-blue-50 min-h-[calc(100vh-5rem)]">
       <div
         className={
           isImgFullScreen
@@ -76,11 +79,11 @@ export const ViewYours = observer(() => {
           <DisabledByDefaultOutlinedIcon fontSize="large" color="inherit" />
         </div>
       </div>
-      <div className="flex flex-wrap flex-row-3 bg-slate-400 justify-center gap-6">
+      <div className="flex flex-wrap flex-row-3 bg-blue-50 justify-center gap-6 h-full">
         {currentUserPictureList.map((item, index) => {
           return (
             <div
-              className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl hover:opacity-70 cursor-pointer"
+              className="w-1/4 p-8 flex justify-center flex-col max-h-96 bg-blue-50 bg-opacity-20 backdrop-blur-md shadow-xl hover:opacity-70 cursor-pointer"
               onClick={() => getYourImg(item.url)}
               key={`${index}-${item.url}`}
             >

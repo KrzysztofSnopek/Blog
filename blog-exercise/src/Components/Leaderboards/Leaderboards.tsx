@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
-import { storage } from "../../firebase";
-import { ref, listAll, getDownloadURL, getMetadata } from "firebase/storage";
 import { doc, onSnapshot } from "@firebase/firestore";
-import { auth, db } from "../../firebase";
+import { db } from "../../firebase";
 import { Loader } from "../../Helpers/Loader";
 import { UploadedImage, LikedPhotos } from "../../Helpers/PhotoRepository";
 import { usePhotoStore } from "../../Helpers/PhotoStore";
 import { fetchPictureList } from "../../Helpers/fetchPictureList";
+import { SinglePhotoPanel } from "../Main/SinglePhotoPanel";
+import { useAuthStore } from "../Auth/AuthStore";
 
 export function Leaderboards() {
   const photoStore = usePhotoStore();
+  const authStore = useAuthStore();
 
   const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
   const [tempImgURL, setTempImgURL] = useState<string>("");
@@ -19,11 +20,10 @@ export function Leaderboards() {
   );
   const [likeNumber, setLikeNumber] = useState<number>(0);
 
-  const likedPhotosCollectionRef = doc(
-    db,
-    "Photos",
-    `${auth.currentUser?.email}`
-  );
+  const currentUserMail: string =
+    window.localStorage.getItem("user")?.replace(/"/g, "") ?? "no current user";
+
+  const likedPhotosCollectionRef = doc(db, "Photos", currentUserMail);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(likedPhotosCollectionRef, (doc) => {
@@ -68,25 +68,33 @@ export function Leaderboards() {
 
   return (
     <div className="flex flex-row content-end">
-      <div className="grid grid-cols-6 grid-rows-3 bg-slate-400">
+      <div className="grid grid-cols-6 grid-rows-3 bg-blue-50">
         {leadingPictureList.map((item, index) => {
           return (
             <div
-              className="flex justify-center items-center bg-slate-600 bg-opacity-20 backdrop-blur-md shadow-xl p-4"
+              className="flex justify-center items-center bg-blue-50 backdrop-blur-md"
               key={`${index}-${item.url}`}
             >
-              <img
+              {/* <img
                 className="hover:opacity-70 object-cover cursor-pointer rounded-2xl h-[calc((100vh-11rem)/3)]"
                 src={item.url}
                 alt={item.alt}
                 onClick={() => getImg(item.url)}
-              />
+              /> */}
+
+              <div key={item.url} className=" bg-blue-100">
+                <SinglePhotoPanel
+                  index={index}
+                  item={item}
+                  currentUserMail={authStore.currentUserMail}
+                />
+              </div>
             </div>
           );
         })}
         <div className="order-4 col-start-2 col-end-6 row-start-1 row-end-4 flex">
           <img
-            className="m-auto max-h-[calc(100vh-5rem)]"
+            className="m-auto max-h-[calc(100vh-6rem)]"
             src={leadingPictureList[0]?.url}
             alt=""
           />

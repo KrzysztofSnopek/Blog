@@ -11,6 +11,8 @@ export default class AuthStore {
   cookie: Cookies = new Cookies();
   isAuth: boolean = !!this.cookie.get("auth-token");
   currUser: User | null = null;
+  currentUserMail: string =
+    window.localStorage.getItem("user") ?? "no current user";
   getCurrentUser = () => {
     this.currUser = auth.currentUser;
   };
