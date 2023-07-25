@@ -17,7 +17,7 @@ export const Main = observer(() => {
   const authStore = useAuthStore();
 
   const currentUserMail: string =
-    window.localStorage.getItem("user")?.replace(/"/g, "") ?? "no current user";
+    window.localStorage.getItem("user") ?? "no current user";
 
   const likedPhotosCollectionRef = doc(db, "Photos", currentUserMail);
 
@@ -31,7 +31,7 @@ export const Main = observer(() => {
     });
 
     return () => unsubscribe();
-  }, [likedPhotosCollectionRef]);
+  }, []);
 
   useEffect(() => {
     photoStore.setIsLoading(true);
