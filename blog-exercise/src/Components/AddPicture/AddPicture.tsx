@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { storage } from "../../firebase";
 import { ref, uploadString } from "firebase/storage";
 import { auth } from "../../firebase";
@@ -13,6 +13,7 @@ export const AddPicture = observer(() => {
   const userName = auth.currentUser?.email ?? "";
   const storagePathElement = userName + "_" + v4();
   const [picturePreview, setPicturePreview] = useState();
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   const handleImageUpload = async (e: any) => {
     e.preventDefault();
@@ -32,7 +33,7 @@ export const AddPicture = observer(() => {
     };
 
     await uploadString(imageRef, filebase64, "base64", metadata).then(() => {
-      alert("uploaded to the storage");
+      setShowSuccessMessage(true);
     });
   };
 
@@ -50,36 +51,67 @@ export const AddPicture = observer(() => {
     setPicturePreview(undefined);
   };
 
+  useEffect(() => {
+    if (showSuccessMessage) {
+      const timeout = setTimeout(() => {
+        setShowSuccessMessage(false);
+        setPicturePreview(undefined);
+        setPictureName("");
+      }, 3000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [showSuccessMessage]);
+
   return (
     <div className="flex justify-center bg-blue-50 min-h-[calc(100vh-5rem)] font-body">
       <div className="flex items-center flex-col pt-10 w-1/2 max-lg:w-full">
-        <h1 className="font-bold p-2 w-full bg-blue-300 text-center">
+        <h1 className="font-bold text-xl pt-6 w-full bg-blue-200 text-center">
           Share your pictures with others here!
         </h1>
         <div className="w-full">
           <form
             onSubmit={handleImageUpload}
-            className="bg-blue-300 flex p-4 justify-between"
+            className="bg-blue-200 flex p-8 justify-between"
           >
+            <label
+              htmlFor="photo-picker"
+              className="bg-blue-300 relative p-4 font-bold hover:text-slate-950 before:absolute before:-z-10 before:bottom-0 before:left-[50%] before:w-0 before:h-0 before:bg-blue-400 hover:before:animate-fillNav hover:opacity-90 hover:cursor-pointer"
+            >
+              Select a file
+            </label>
             <input
               type="file"
               id="photo-picker"
-              className="p-4"
+              className="hidden"
               onChange={(e) => {
                 handlePictureChange(e);
               }}
             />
-            <input
-              className="p-4"
-              type="text"
-              placeholder="Add picture name"
-              id="photo-name"
-              onChange={(e) => setPictureName(e.target.value)}
-            />
-            <button type="submit" className="p-4 bg-blue-200">
-              Share your picture!
-            </button>
+            <div>
+              <input
+                className="p-4"
+                type="text"
+                minLength={3}
+                maxLength={25}
+                placeholder="Add picture name"
+                id="photo-name"
+                value={pictureName}
+                onChange={(e) => setPictureName(e.target.value)}
+              />
+              <button
+                type="submit"
+                className="bg-blue-300 relative p-4 font-bold hover:text-slate-950 before:absolute before:-z-10 before:bottom-0 before:left-[50%] before:w-0 before:h-0 before:bg-blue-400 hover:before:animate-fillNav hover:opacity-90"
+              >
+                Share your picture!
+              </button>
+            </div>
           </form>
+          {showSuccessMessage && (
+            <div className="p-4 pt-0 bg-blue-200 text-green-500 font-bold text-lg text-center">
+              Picture uploaded successfully!
+            </div>
+          )}
         </div>
 
         {picturePreview && (
@@ -89,7 +121,7 @@ export const AddPicture = observer(() => {
                 <img
                   src={URL.createObjectURL(picturePreview)}
                   alt="Thumb"
-                  className="max-h-[60vh] w-auto"
+                  className="max-h-[50vh] w-auto mb-6"
                 />
               </div>
             </div>
