@@ -67,7 +67,7 @@ export function Leaderboards() {
   };
 
   return (
-    <div className="flex flex-row content-end">
+    <div className="flex flex-row content-end p-2 bg-blue-50">
       <div className="grid grid-cols-6 grid-rows-3 bg-blue-50">
         {leadingPictureList.map((item, index) => {
           return (

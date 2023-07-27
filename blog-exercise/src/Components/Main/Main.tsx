@@ -11,6 +11,7 @@ import { Slider } from "./Slider";
 import { fetchPictureList } from "../../Helpers/fetchPictureList";
 import { useAuthStore } from "../Auth/AuthStore";
 import { db } from "../../firebase";
+import { ScrollArrow } from "./ScrollArrow";
 
 export const Main = observer(() => {
   const photoStore = usePhotoStore();
@@ -54,6 +55,8 @@ export const Main = observer(() => {
 
   return (
     <div className="flex justify-center bg-blue-50 flex-col">
+      <ScrollArrow />
+
       <div className="flex justify-end h-[15vh] items-center flex-col">
         <h1 className="font-body font-bold text-7xl italic drop-shadow-4xl text-blue-500 leading-4 z-10">
           ShowYourPicture

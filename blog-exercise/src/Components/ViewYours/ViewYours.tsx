@@ -79,7 +79,7 @@ export const ViewYours = observer(() => {
           <DisabledByDefaultOutlinedIcon fontSize="large" color="inherit" />
         </div>
       </div>
-      <div className="flex flex-wrap flex-row-3 bg-blue-50 justify-center gap-6 h-full">
+      <div className="flex flex-wrap flex-row-3 bg-blue-50 justify-center gap-6 h-full p-4">
         {currentUserPictureList.map((item, index) => {
           return (
             <div
