@@ -5,20 +5,19 @@ import { Loader } from "../../Helpers/Loader";
 import { UploadedImage, LikedPhotos } from "../../Helpers/PhotoRepository";
 import { usePhotoStore } from "../../Helpers/PhotoStore";
 import { fetchPictureList } from "../../Helpers/fetchPictureList";
-import { SinglePhotoPanel } from "../Main/SinglePhotoPanel";
 import { useAuthStore } from "../Auth/AuthStore";
+import { LeadPhotoPanel } from "./LeadPhotoPanel";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 export function Leaderboards() {
   const photoStore = usePhotoStore();
   const authStore = useAuthStore();
 
-  const [isImgFullScreen, setIsImgFullScreen] = useState<boolean>(false);
-  const [tempImgURL, setTempImgURL] = useState<string>("");
   const [likedPhotos, setLikedPhotos] = useState<LikedPhotos>();
   const [leadingPictureList, setLeadingPictureList] = useState<UploadedImage[]>(
     []
   );
-  const [likeNumber, setLikeNumber] = useState<number>(0);
+  const [tempImgURL, setTempImgURL] = useState<string>("");
 
   const currentUserMail: string =
     window.localStorage.getItem("user")?.replace(/"/g, "") ?? "no current user";
@@ -59,31 +58,38 @@ export function Leaderboards() {
   });
   if (leadingPictureList.length > 6) {
     setLeadingPictureList(leadingPictureList.slice(0, 6));
+    setTempImgURL(leadingPictureList[0]?.url);
   }
 
-  const getImg = (imgUrl: string) => {
+  const getImgURLToDisplay = (imgUrl: string): void => {
     setTempImgURL(imgUrl);
-    setIsImgFullScreen(true);
   };
 
   return (
-    <div className="flex flex-row content-end p-2 bg-blue-50">
-      <div className="grid grid-cols-6 grid-rows-3 bg-blue-50">
+    <div className="flex flex-col content-end pt-6 bg-blue-50 h-[calc(100vh-5rem)]">
+      <div className="flex max-w-[90vw] w-auto h-full m-auto">
+        <div
+          className="h-[65vh] w-[90vw] bg-contain bg-no-repeat bg-center relative"
+          style={{ backgroundImage: `url(${tempImgURL}` }}
+        >
+          <div className="text-blue-100 absolute bottom-2 right-1/2 transform translate-x-1/2 flex z-10 bg-black p-4 opacity-80 rounded-full">
+            <span className="font-bold text-4xl pr-1">
+              {leadingPictureList[0]?.likeCount}
+            </span>
+            <FavoriteIcon fontSize="large" className="mt-1" />
+          </div>
+        </div>
+      </div>
+      <div className="bg-blue-50 flex m-auto p-4">
         {leadingPictureList.map((item, index) => {
           return (
-            <div
-              className="flex justify-center items-center bg-blue-50 backdrop-blur-md"
-              key={`${index}-${item.url}`}
-            >
-              {/* <img
-                className="hover:opacity-70 object-cover cursor-pointer rounded-2xl h-[calc((100vh-11rem)/3)]"
-                src={item.url}
-                alt={item.alt}
-                onClick={() => getImg(item.url)}
-              /> */}
-
-              <div key={item.url} className=" bg-blue-100">
-                <SinglePhotoPanel
+            <div className="hover:cursor-pointer" key={`${index}-${item.url}`}>
+              <div
+                key={item.url}
+                className="bg-blue-100"
+                onClick={() => getImgURLToDisplay(item.url)}
+              >
+                <LeadPhotoPanel
                   index={index}
                   item={item}
                   currentUserMail={authStore.currentUserMail}
@@ -92,13 +98,6 @@ export function Leaderboards() {
             </div>
           );
         })}
-        <div className="order-4 col-start-2 col-end-6 row-start-1 row-end-4 flex">
-          <img
-            className="m-auto max-h-[calc(100vh-6rem)]"
-            src={leadingPictureList[0]?.url}
-            alt=""
-          />
-        </div>
       </div>
     </div>
   );
