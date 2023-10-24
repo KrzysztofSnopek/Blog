@@ -1,4 +1,4 @@
-# SowYourPicture
+# ShareYourPicture
 
 ## Table of content
 * [General info](#general-info)
