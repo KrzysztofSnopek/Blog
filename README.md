@@ -4,7 +4,6 @@
 * [General info](#general-info)
 * [Setup](#setup)
 * [Technologies](#technologies)
-* [Features](#features)
 
 ## General info
 
@@ -14,17 +13,18 @@ You can check the latest deployed version here:
 https://show-your-picture.web.app/
 
 ## Setup
+Navigate to the folder you want the repository, clone the repository with a command:
+
+```
+git clone https://github.com/KrzysztofSnopek/ShareYourPic
+```
+
 To run this project, install it locally using npm:
 
 ```
 
-$ cd ../Blog/blog-exercise
+$ cd ShareYourPic/blog-exercise
 $ npm install
-$ npm install react-scripts
-$ npm install firebase
-$ npm install --save mobx
-$ npm install @mui/material @emotion/react @emotion/styled
-& npm install react-icons --save
 $ npm start
 
 ```
@@ -41,8 +41,6 @@ Project is created with:
 * react-router-dom v6.8.1
 * Mobx-react v7.6.0
 * Tailwindcss v3.3.1
-
-## Features
 
 Project allows the user to:
 * Log in, log out with a google account
