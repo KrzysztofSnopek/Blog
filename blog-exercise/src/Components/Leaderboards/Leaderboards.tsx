@@ -18,6 +18,7 @@ export function Leaderboards() {
     []
   );
   const [tempImgURL, setTempImgURL] = useState<string>("");
+  const [templikeCount, setTempLikeCount] = useState<number>();
 
   const currentUserMail: string =
     window.localStorage.getItem("user")?.replace(/"/g, "") ?? "no current user";
@@ -40,6 +41,7 @@ export function Leaderboards() {
       try {
         await fetchPictureList(photoStore);
         setLeadingPictureList(photoStore.pictureList);
+        setTempLikeCount(photoStore.pictureList[0].likeCount);
       } catch (error) {
         console.error("Could not fetch picture list:", error);
       } finally {
@@ -56,13 +58,14 @@ export function Leaderboards() {
   leadingPictureList.sort(function (a, b) {
     return b.likeCount - a.likeCount;
   });
-  if (leadingPictureList.length > 6) {
+  if (leadingPictureList && leadingPictureList.length > 6) {
     setLeadingPictureList(leadingPictureList.slice(0, 6));
     setTempImgURL(leadingPictureList[0]?.url);
   }
 
-  const getImgURLToDisplay = (imgUrl: string): void => {
+  const getImgToDisplay = (imgUrl: string, likes: number): void => {
     setTempImgURL(imgUrl);
+    setTempLikeCount(likes);
   };
 
   return (
@@ -73,9 +76,7 @@ export function Leaderboards() {
           style={{ backgroundImage: `url(${tempImgURL}` }}
         >
           <div className="text-blue-100 absolute bottom-2 right-1/2 transform translate-x-1/2 flex z-10 bg-black p-4 opacity-80 rounded-full">
-            <span className="font-bold text-4xl pr-1">
-              {leadingPictureList[0]?.likeCount}
-            </span>
+            <span className="font-bold text-4xl pr-1">{templikeCount}</span>
             <FavoriteIcon fontSize="large" className="mt-1" />
           </div>
         </div>
@@ -87,7 +88,7 @@ export function Leaderboards() {
               <div
                 key={item.url}
                 className="bg-blue-100"
-                onClick={() => getImgURLToDisplay(item.url)}
+                onClick={() => getImgToDisplay(item.url, item.likeCount)}
               >
                 <LeadPhotoPanel
                   index={index}
