@@ -18,8 +18,8 @@ export const fetchPictureList = async (store: PhotoStore) => {
     const newImageData = results.map(([url, metadata]) => ({
       url,
       alt: metadata?.customMetadata?.imageName ?? "",
-      storagePathElement: metadata.customMetadata.storagePathElement,
-      likeCount: metadata.customMetadata.likeCount,
+      storagePathElement: metadata?.customMetadata?.storagePathElement ?? "",
+      likeCount: Number(metadata?.customMetadata?.likeCount) ?? 0,
     }));
 
     store.setPictureList([...imageData, ...newImageData]);

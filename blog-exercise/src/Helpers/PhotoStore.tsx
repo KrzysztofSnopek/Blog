@@ -111,7 +111,7 @@ export default class PhotoStore {
     const countRef = ref(storage, `projectFiles/${item.storagePathElement}`);
 
     updateMetadata(countRef, newAddLikeMetadata).then((metadata) => {
-      this.setLikeNumber(metadata.customMetadata.likeCount);
+      this.setLikeNumber(Number(metadata?.customMetadata?.likeCount));
     });
   };
 
